@@ -22,8 +22,8 @@
 			icon: Info
 		},
 		TIP: {
-			border: 'border-emerald-500',
-			text: 'text-emerald-500',
+			border: 'border-slate-500',
+			text: 'text-slate-600 dark:text-slate-400',
 			icon: LightBulb
 		},
 		IMPORTANT: {

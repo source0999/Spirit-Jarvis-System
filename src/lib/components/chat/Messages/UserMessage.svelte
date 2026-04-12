@@ -6,7 +6,7 @@
 	import { models, settings } from '$lib/stores';
 	import { user as _user } from '$lib/stores';
 	import { copyToClipboard as _copyToClipboard, formatDate } from '$lib/utils';
-	import { WEBUI_API_BASE_URL, WEBUI_BASE_URL } from '$lib/constants';
+	import { WEBUI_API_BASE_URL, BRANDING_LOGO_URL } from '$lib/constants';
 
 	import Name from './Name.svelte';
 	import ProfileImage from './ProfileImage.svelte';
@@ -132,71 +132,45 @@
 	id="message-{message.id}"
 	style="scroll-margin-top: 3rem;"
 >
-	{#if !($settings?.chatBubble ?? true)}
-		<div class={`shrink-0 ltr:mr-3 rtl:ml-3 mt-1`}>
-			<ProfileImage
-				src={user?.id
-					? `${WEBUI_API_BASE_URL}/users/${user.id}/profile/image`
-					: `${WEBUI_BASE_URL}/static/favicon.png`}
-				className={'size-8 user-message-profile-image'}
-			/>
+	<div class={`shrink-0 ltr:mr-3 rtl:ml-3 mt-1`}>
+		<ProfileImage
+			src={user?.id
+				? `${WEBUI_API_BASE_URL}/users/${user.id}/profile/image`
+				: BRANDING_LOGO_URL}
+			className={'size-8 user-message-profile-image'}
+		/>
+	</div>
+	<div class="min-w-0 flex-auto max-w-full pl-1">
+		<div>
+			<Name>
+				{#if message.user}
+					{$i18n.t('You')}
+					<span class=" text-gray-500 text-sm font-medium">{message?.user ?? ''}</span>
+				{:else if $settings.showUsername || $_user?.name !== user?.name}
+					{user?.name ?? $i18n.t('You')}
+				{:else}
+					{$i18n.t('You')}
+				{/if}
+
+				{#if message.timestamp}
+					<div
+						class="self-center text-xs font-medium first-letter:capitalize ml-0.5 translate-y-[1px] {($settings?.highContrastMode ??
+						false)
+							? 'dark:text-gray-900 text-gray-100'
+							: 'invisible group-hover:visible transition'}"
+					>
+						<Tooltip content={dayjs(message.timestamp * 1000).format('LLLL')}>
+							<span class="line-clamp-1"
+								>{$i18n.t(formatDate(message.timestamp * 1000), {
+									LOCALIZED_TIME: dayjs(message.timestamp * 1000).format('LT'),
+									LOCALIZED_DATE: dayjs(message.timestamp * 1000).format('L')
+								})}</span
+							>
+						</Tooltip>
+					</div>
+				{/if}
+			</Name>
 		</div>
-	{/if}
-	<div class="flex-auto w-0 max-w-full pl-1">
-		{#if !($settings?.chatBubble ?? true)}
-			<div>
-				<Name>
-					{#if message.user}
-						{$i18n.t('You')}
-						<span class=" text-gray-500 text-sm font-medium">{message?.user ?? ''}</span>
-					{:else if $settings.showUsername || $_user?.name !== user?.name}
-						{user?.name ?? $i18n.t('You')}
-					{:else}
-						{$i18n.t('You')}
-					{/if}
-
-					{#if message.timestamp}
-						<div
-							class="self-center text-xs font-medium first-letter:capitalize ml-0.5 translate-y-[1px] {($settings?.highContrastMode ??
-							false)
-								? 'dark:text-gray-900 text-gray-100'
-								: 'invisible group-hover:visible transition'}"
-						>
-							<Tooltip content={dayjs(message.timestamp * 1000).format('LLLL')}>
-								<!-- $i18n.t('Today at {{LOCALIZED_TIME}}') -->
-								<!-- $i18n.t('Yesterday at {{LOCALIZED_TIME}}') -->
-								<!-- $i18n.t('{{LOCALIZED_DATE}} at {{LOCALIZED_TIME}}') -->
-
-								<span class="line-clamp-1"
-									>{$i18n.t(formatDate(message.timestamp * 1000), {
-										LOCALIZED_TIME: dayjs(message.timestamp * 1000).format('LT'),
-										LOCALIZED_DATE: dayjs(message.timestamp * 1000).format('L')
-									})}</span
-								>
-							</Tooltip>
-						</div>
-					{/if}
-				</Name>
-			</div>
-		{:else if message.timestamp}
-			<div class="flex justify-end pr-2 text-xs">
-				<div
-					class="text-[0.65rem] font-medium first-letter:capitalize mb-0.5 {($settings?.highContrastMode ??
-					false)
-						? 'dark:text-gray-100 text-gray-900'
-						: 'invisible group-hover:visible transition text-gray-400'}"
-				>
-					<Tooltip content={dayjs(message.timestamp * 1000).format('LLLL')}>
-						<span class="line-clamp-1"
-							>{$i18n.t(formatDate(message.timestamp * 1000), {
-								LOCALIZED_TIME: dayjs(message.timestamp * 1000).format('LT'),
-								LOCALIZED_DATE: dayjs(message.timestamp * 1000).format('L')
-							})}</span
-						>
-					</Tooltip>
-				</div>
-			</div>
-		{/if}
 
 		<div class="chat-{message.role} w-full min-w-full markdown-prose">
 			{#if edit !== true}
@@ -210,7 +184,7 @@
 								file.url?.startsWith('data') || file.url?.startsWith('http')
 									? file.url
 									: `${WEBUI_API_BASE_URL}/files/${file.url}${file?.content_type ? '/content' : ''}`}
-							<div class={($settings?.chatBubble ?? true) ? 'self-end' : ''}>
+							<div class="self-start">
 								{#if file.type === 'image' || (file?.content_type ?? '').startsWith('image/')}
 									<Image src={fileUrl} imageClassName=" max-h-96 rounded-lg" />
 								{:else}
@@ -230,7 +204,7 @@
 			{/if}
 
 			{#if edit === true}
-				<div class=" w-full bg-gray-50 dark:bg-gray-800 rounded-3xl px-5 py-3 mb-2">
+				<div class="mb-2 w-full py-2">
 					{#if (editedFiles ?? []).length > 0}
 						<div class="flex items-center flex-wrap gap-2 -mx-2 mb-1">
 							{#each editedFiles as file, fileIdx}
@@ -325,7 +299,7 @@
 									document.getElementById('confirm-edit-message-button')?.click();
 								}
 							}}
-						/>
+						></textarea>
 					</div>
 
 					<div class=" mt-2 mb-1 flex justify-between text-sm font-medium">
@@ -366,14 +340,8 @@
 				</div>
 			{:else if message.content !== ''}
 				<div class="w-full">
-					<div class="flex {($settings?.chatBubble ?? true) ? 'justify-end pb-1' : 'w-full'}">
-						<div
-							class="rounded-3xl {($settings?.chatBubble ?? true)
-								? `max-w-[90%] px-4 py-1.5  bg-gray-50 dark:bg-gray-850 ${
-										message.files ? 'rounded-tr-lg' : ''
-									}`
-								: ' w-full'}"
-						>
+					<div class="flex w-full justify-start pb-1">
+						<div class="w-full max-w-full py-0.5">
 							{#if message.content}
 								<Markdown
 									id={`${chatId}-${message.id}`}
@@ -388,13 +356,8 @@
 			{/if}
 
 			{#if edit !== true}
-				<div
-					class=" flex {($settings?.chatBubble ?? true)
-						? 'justify-end'
-						: ''}  text-gray-600 dark:text-gray-500"
-				>
-					{#if !($settings?.chatBubble ?? true)}
-						{#if siblings.length > 1}
+				<div class="flex flex-wrap justify-start gap-0.5 text-gray-600 dark:text-gray-500">
+					{#if siblings.length > 1}
 							<div class="flex self-center" dir="ltr">
 								<button
 									class="self-center p-1 hover:bg-black/5 dark:hover:bg-white/5 dark:hover:text-white hover:text-black rounded-md transition"
@@ -485,7 +448,6 @@
 									</svg>
 								</button>
 							</div>
-						{/if}
 					{/if}
 					{#if !readOnly}
 						<Tooltip content={$i18n.t('Edit')} placement="bottom">
@@ -570,101 +532,6 @@
 									</svg>
 								</button>
 							</Tooltip>
-						{/if}
-					{/if}
-
-					{#if $settings?.chatBubble ?? true}
-						{#if siblings.length > 1}
-							<div class="flex self-center" dir="ltr">
-								<button
-									class="self-center p-1 hover:bg-black/5 dark:hover:bg-white/5 dark:hover:text-white hover:text-black rounded-md transition"
-									on:click={() => {
-										showPreviousMessage(message);
-									}}
-								>
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										fill="none"
-										viewBox="0 0 24 24"
-										stroke="currentColor"
-										stroke-width="2.5"
-										class="size-3.5"
-									>
-										<path
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											d="M15.75 19.5 8.25 12l7.5-7.5"
-										/>
-									</svg>
-								</button>
-
-								{#if messageIndexEdit}
-									<div
-										class="text-sm flex justify-center font-semibold self-center dark:text-gray-100 min-w-fit"
-									>
-										<input
-											id="message-index-input-{message.id}"
-											type="number"
-											value={siblings.indexOf(message.id) + 1}
-											min="1"
-											max={siblings.length}
-											on:focus={(e) => {
-												e.target.select();
-											}}
-											on:blur={(e) => {
-												gotoMessage(message, e.target.value - 1);
-												messageIndexEdit = false;
-											}}
-											on:keydown={(e) => {
-												if (e.key === 'Enter') {
-													gotoMessage(message, e.target.value - 1);
-													messageIndexEdit = false;
-												}
-											}}
-											class="bg-transparent font-semibold self-center dark:text-gray-100 min-w-fit outline-hidden"
-										/>/{siblings.length}
-									</div>
-								{:else}
-									<!-- svelte-ignore a11y-no-static-element-interactions -->
-									<div
-										class="text-sm tracking-widest font-semibold self-center dark:text-gray-100 min-w-fit"
-										on:dblclick={async () => {
-											messageIndexEdit = true;
-
-											await tick();
-											const input = document.getElementById(`message-index-input-${message.id}`);
-											if (input) {
-												input.focus();
-												input.select();
-											}
-										}}
-									>
-										{siblings.indexOf(message.id) + 1}/{siblings.length}
-									</div>
-								{/if}
-
-								<button
-									class="self-center p-1 hover:bg-black/5 dark:hover:bg-white/5 dark:hover:text-white hover:text-black rounded-md transition"
-									on:click={() => {
-										showNextMessage(message);
-									}}
-								>
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										fill="none"
-										viewBox="0 0 24 24"
-										stroke="currentColor"
-										stroke-width="2.5"
-										class="size-3.5"
-									>
-										<path
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											d="m8.25 4.5 7.5 7.5-7.5 7.5"
-										/>
-									</svg>
-								</button>
-							</div>
 						{/if}
 					{/if}
 				</div>

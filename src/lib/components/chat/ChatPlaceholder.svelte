@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { WEBUI_API_BASE_URL, WEBUI_BASE_URL } from '$lib/constants';
+	import { WEBUI_API_BASE_URL, WEBUI_BASE_URL, BRANDING_LOGO_URL } from '$lib/constants';
 	import { marked } from 'marked';
 
 	import { config, user, models as _models, temporaryChatEnabled } from '$lib/stores';
@@ -58,7 +58,7 @@
 								alt="logo"
 								draggable="false"
 								on:error={(e) => {
-									e.currentTarget.src = '/favicon.png';
+									e.currentTarget.src = BRANDING_LOGO_URL;
 								}}
 							/>
 						</Tooltip>
@@ -119,7 +119,7 @@
 							</div>
 						{/if}
 					{:else}
-						<div class=" text-gray-400 dark:text-gray-500 line-clamp-1 font-p">
+						<div class="line-clamp-1 font-p text-slate-400">
 							{$i18n.t('How can I help you today?')}
 						</div>
 					{/if}

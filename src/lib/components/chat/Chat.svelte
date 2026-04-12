@@ -2711,7 +2711,7 @@
 />
 
 <div
-	class="h-screen max-h-[100dvh] transition-width duration-200 ease-in-out {$showSidebar
+	class="h-screen max-h-[100dvh] min-h-0 min-w-0 flex-1 transition-[max-width,width] duration-300 ease-out {$showSidebar
 		? '  md:max-w-[calc(100%-var(--sidebar-width))]'
 		: ' '} w-full max-w-full flex flex-col"
 	id="chat-container"
@@ -2722,25 +2722,25 @@
 				<div
 					class="absolute top-0 left-0 w-full h-full bg-cover bg-center bg-no-repeat"
 					style="background-image: url({$selectedFolder?.meta?.background_image_url})  "
-				/>
+				></div>
 
 				<div
-					class="absolute top-0 left-0 w-full h-full bg-linear-to-t from-white to-white/85 dark:from-gray-900 dark:to-gray-900/90 z-0"
-				/>
+					class="absolute top-0 left-0 w-full h-full bg-linear-to-t from-white to-white/85 dark:from-[#000000] dark:to-[#000000] z-0"
+				></div>
 			{:else if $settings?.backgroundImageUrl ?? $config?.license_metadata?.background_image_url ?? null}
 				<div
 					class="absolute top-0 left-0 w-full h-full bg-cover bg-center bg-no-repeat"
 					style="background-image: url({$settings?.backgroundImageUrl ??
 						$config?.license_metadata?.background_image_url})  "
-				/>
+				></div>
 
 				<div
-					class="absolute top-0 left-0 w-full h-full bg-linear-to-t from-white to-white/85 dark:from-gray-900 dark:to-gray-900/90 z-0"
-				/>
+					class="absolute top-0 left-0 w-full h-full bg-linear-to-t from-white to-white/85 dark:from-[#000000] dark:to-[#000000] z-0"
+				></div>
 			{/if}
 
-			<PaneGroup direction="horizontal" class="w-full h-full">
-				<Pane defaultSize={50} minSize={30} class="h-full flex relative max-w-full flex-col">
+			<PaneGroup direction="horizontal" class="w-full h-full min-h-0 min-w-0">
+				<Pane defaultSize={50} minSize={30} class="h-full min-h-0 min-w-0 flex relative max-w-full flex-col">
 					<FilesOverlay show={dragged} />
 					<Navbar
 						bind:this={navbarElement}
@@ -2801,7 +2801,7 @@
 						}}
 					/>
 
-					<div id="chat-pane" class="flex flex-col flex-auto z-10 w-full @container overflow-auto">
+					<div id="chat-pane" class="flex flex-col flex-auto min-h-0 z-10 w-full @container overflow-hidden">
 						{#if ($settings?.landingPageMode === 'chat' && !$selectedFolder) || createMessagesList(history, history.currentId).length > 0}
 							<div
 								class=" pb-2.5 flex flex-col justify-between w-full flex-auto overflow-auto h-0 max-w-full z-10 scrollbar-hidden"
@@ -2839,7 +2839,18 @@
 								</div>
 							</div>
 
-							<div class=" pb-2 {dragged ? 'z-0' : 'z-10'}">
+							<div
+								class="shrink-0 relative z-20 isolate w-full px-2 min-[480px]:px-4 md:px-6 pb-[max(0.625rem,env(safe-area-inset-bottom))] pt-2 transition-[padding] duration-300 ease-out {dragged
+									? 'z-0'
+									: ''}"
+							>
+								<div
+									class="pointer-events-none absolute inset-x-0 -top-10 h-10 bg-linear-to-t from-transparent to-black/5 dark:from-transparent dark:to-black/50 -z-10"
+									aria-hidden="true"
+								></div>
+								<div
+									class="relative mx-auto w-full max-w-[min(100%,52rem)] transition-[max-width] duration-300 ease-out"
+								>
 								<MessageInput
 									bind:this={messageInput}
 									{history}
@@ -2921,6 +2932,7 @@
 									class="absolute bottom-1 text-xs text-gray-500 text-center line-clamp-1 right-0 left-0"
 								>
 									<!-- {$i18n.t('LLMs can make mistakes. Verify important information.')} -->
+								</div>
 								</div>
 							</div>
 						{:else}

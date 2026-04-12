@@ -60,7 +60,13 @@
 		removeTerminalConnection
 	} from '$lib/utils/connections';
 
-	import { WEBUI_API_BASE_URL, WEBUI_BASE_URL, WEBUI_HOSTNAME } from '$lib/constants';
+	import {
+		APP_NAME,
+		BRANDING_LOGO_URL,
+		WEBUI_API_BASE_URL,
+		WEBUI_BASE_URL,
+		WEBUI_HOSTNAME
+	} from '$lib/constants';
 	import { bestMatchingLanguage, displayFileHandler } from '$lib/utils';
 	import { setTextScale } from '$lib/utils/text-scale';
 
@@ -454,9 +460,9 @@
 
 					if ($isLastActiveTab) {
 						if ($settings?.notificationEnabled ?? false) {
-							new Notification(`${displayTitle} • Open WebUI`, {
+							new Notification(`${displayTitle} • ${APP_NAME}`, {
 								body: content,
-								icon: `${WEBUI_BASE_URL}/static/favicon.png`
+								icon: BRANDING_LOGO_URL
 							});
 						}
 					}
@@ -657,7 +663,7 @@
 
 				if ($isLastActiveTab) {
 					if ($settings?.notificationEnabled ?? false) {
-						new Notification(`${title} • Open WebUI`, {
+						new Notification(`${title} • ${APP_NAME}`, {
 							body: data?.content,
 							icon: `${WEBUI_API_BASE_URL}/users/${data?.user?.id}/profile/image`
 						});
@@ -933,7 +939,7 @@
 		if (backendConfig) {
 			// Save Backend Status to Store
 			await config.set(backendConfig);
-			await WEBUI_NAME.set(backendConfig.name);
+			await WEBUI_NAME.set(APP_NAME);
 
 			if ($config) {
 				await setupSocket($config.features?.enable_websocket ?? true);
@@ -1031,7 +1037,7 @@
 
 <svelte:head>
 	<title>{$WEBUI_NAME}</title>
-	<link crossorigin="anonymous" rel="icon" href="{WEBUI_BASE_URL}/static/favicon.png" />
+	<link crossorigin="anonymous" rel="icon" href={BRANDING_LOGO_URL} />
 
 	<meta name="apple-mobile-web-app-title" content={$WEBUI_NAME} />
 	<meta name="description" content={$WEBUI_NAME} />

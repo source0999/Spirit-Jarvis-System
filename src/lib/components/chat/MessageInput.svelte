@@ -1129,7 +1129,9 @@
 							class=" absolute -top-12 left-0 right-0 flex justify-center z-30 pointer-events-none"
 						>
 							<button
+								type="button"
 								class=" bg-white border border-gray-100 dark:border-none dark:bg-white/20 p-1.5 rounded-full pointer-events-auto"
+								aria-label={$i18n.t('Scroll to bottom')}
 								on:click={() => {
 									autoScroll = true;
 									scrollToBottom();
@@ -1213,9 +1215,12 @@
 					>
 						<button
 							id="generate-message-pair-button"
+							type="button"
 							class="hidden"
+							aria-label={$i18n.t('Generate')}
+							tabindex="-1"
 							on:click={() => createMessagePair(prompt)}
-						/>
+						></button>
 
 						<!-- Queued messages display -->
 						{#if messageQueue.length > 0}
@@ -1237,9 +1242,9 @@
 
 						<div
 							id="message-input-container"
-							class="flex-1 flex flex-col relative w-full shadow-lg rounded-3xl border {$temporaryChatEnabled
-								? 'border-dashed border-gray-100 dark:border-gray-800 hover:border-gray-200 focus-within:border-gray-200 hover:dark:border-gray-700 focus-within:dark:border-gray-700'
-								: ' border-gray-100/30 dark:border-gray-850/30 hover:border-gray-200 focus-within:border-gray-100 hover:dark:border-gray-800 focus-within:dark:border-gray-800'}  transition px-1 bg-white/5 dark:bg-gray-500/5 backdrop-blur-sm dark:text-gray-100"
+							class="flex-1 flex flex-col relative w-full rounded-[2px] border border-solid shadow-[0_6px_28px_rgba(0,0,0,0.12)] dark:shadow-none outline-hidden ring-0 focus-within:outline-hidden focus-within:ring-0 {$temporaryChatEnabled
+								? 'border-gray-200/90 dark:border-[#334155] hover:border-gray-300 dark:hover:border-[#475569] focus-within:border-gray-400 focus-within:dark:border-[#475569] border-dashed'
+								: 'border-gray-200/90 dark:border-[#334155] hover:border-gray-300 dark:hover:border-[#475569] focus-within:border-gray-400 focus-within:dark:border-[#475569]'} transition-[border-color] duration-200 ease-out px-1 bg-white/90 dark:bg-[#050505] dark:text-slate-200"
 							dir={$settings?.chatDirection ?? 'auto'}
 						>
 							{#if atSelectedModel !== undefined}
@@ -1366,7 +1371,7 @@
 
 							<div class="px-2.5">
 								<div
-									class="scrollbar-hidden rtl:text-right ltr:text-left bg-transparent dark:text-gray-100 outline-hidden w-full pb-1 px-1 resize-none h-fit max-h-96 overflow-auto {files.length ===
+									class="scrollbar-hidden rtl:text-right ltr:text-left bg-transparent dark:text-slate-200 outline-hidden w-full pb-1 px-1 resize-none h-fit max-h-96 overflow-auto {files.length ===
 									0
 										? atSelectedModel !== undefined
 											? 'pt-1.5'
@@ -1625,7 +1630,7 @@
 									{#if showWebSearchButton || showImageGenerationButton || showCodeInterpreterButton || showToolsButton || (toggleFilters && toggleFilters.length > 0)}
 										<div
 											class="flex self-center w-[1px] h-4 mx-1 bg-gray-200/50 dark:bg-gray-800/50"
-										/>
+										></div>
 
 										<IntegrationsMenu
 											selectedModels={atSelectedModel ? [atSelectedModel.id] : selectedModels}
@@ -1832,7 +1837,9 @@
 										<div class=" flex items-center">
 											<Tooltip content={$i18n.t('Stop')}>
 												<button
+													type="button"
 													class="bg-white hover:bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-800 transition rounded-full p-1.5"
+													aria-label={$i18n.t('Stop')}
 													on:click={() => {
 														stopResponse();
 													}}
@@ -2035,7 +2042,7 @@
 								{@html DOMPurify.sanitize(marked($config?.license_metadata?.input_footer))}
 							</div>
 						{:else}
-							<div class="mb-1" />
+							<div class="mb-1"></div>
 						{/if}
 					</form>
 				</div>

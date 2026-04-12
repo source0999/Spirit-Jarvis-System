@@ -131,10 +131,10 @@
 		}
 
 		if (themeToApply === 'dark' && !_theme.includes('oled')) {
-			document.documentElement.style.setProperty('--color-gray-800', '#333');
-			document.documentElement.style.setProperty('--color-gray-850', '#262626');
-			document.documentElement.style.setProperty('--color-gray-900', '#171717');
-			document.documentElement.style.setProperty('--color-gray-950', '#0d0d0d');
+			document.documentElement.style.setProperty('--color-gray-800', '#141414');
+			document.documentElement.style.setProperty('--color-gray-850', '#0a0a0a');
+			document.documentElement.style.setProperty('--color-gray-900', '#000000');
+			document.documentElement.style.setProperty('--color-gray-950', '#000000');
 		}
 
 		themes
@@ -156,13 +156,13 @@
 					? 'dark'
 					: 'light';
 				console.log('Setting system meta theme color: ' + systemTheme);
-				metaThemeColor.setAttribute('content', systemTheme === 'light' ? '#ffffff' : '#171717');
+				metaThemeColor.setAttribute('content', systemTheme === 'light' ? '#ffffff' : '#000000');
 			} else {
 				console.log('Setting meta theme color: ' + _theme);
 				metaThemeColor.setAttribute(
 					'content',
 					_theme === 'dark'
-						? '#171717'
+						? '#000000'
 						: _theme === 'oled-dark'
 							? '#000000'
 							: _theme === 'her'
@@ -182,6 +182,16 @@
 			document.documentElement.style.setProperty('--color-gray-900', '#000000');
 			document.documentElement.style.setProperty('--color-gray-950', '#000000');
 			document.documentElement.classList.add('dark');
+		}
+
+		/* Digital Rain: match app.html — keep dark shell unless Her theme */
+		if (_theme !== 'her') {
+			document.documentElement.classList.remove('light');
+			document.documentElement.classList.add('dark');
+			const meta = document.querySelector('meta[name="theme-color"]');
+			if (meta) {
+				meta.setAttribute('content', '#000000');
+			}
 		}
 
 		console.log(_theme);

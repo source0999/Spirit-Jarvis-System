@@ -335,14 +335,10 @@
 							groupedMessageIds[modelIdx].messageIds[groupedMessageIdsIdx[modelIdx]]}
 
 						<div
-							class=" snap-center w-full max-w-full m-1 border {history.messages[messageId]
-								?.modelIdx == modelIdx
-								? `bg-gray-50 dark:bg-gray-850 border-gray-100 dark:border-gray-800 border-2 ${
-										$mobile ? 'min-w-full' : 'min-w-80'
-									}`
-								: `border-gray-100/30 dark:border-gray-850/30 border-dashed ${
-										$mobile ? 'min-w-full' : 'min-w-80'
-									}`} transition-all p-5 rounded-2xl"
+							class="snap-center m-1 w-full max-w-full border-l border-solid py-3 pl-3 pr-2 transition-colors {history
+								.messages[messageId]?.modelIdx == modelIdx
+								? `border-[#334155] ${$mobile ? 'min-w-full' : 'min-w-80'}`
+								: `border-dashed border-[#334155]/40 ${$mobile ? 'min-w-full' : 'min-w-80'}`}"
 							on:click={async () => {
 								onGroupClick(_messageId, modelIdx);
 							}}
@@ -398,7 +394,7 @@
 						{#if history.messages[messageId]?.merged?.status}
 							{@const message = history.messages[messageId]?.merged}
 
-							<div class="w-full rounded-xl pl-5 pr-2 py-2 mt-2">
+							<div class="mt-2 w-full border-l border-solid border-[#334155] py-2 pl-3 pr-2">
 								<Name>
 									{$i18n.t('Merged Response')}
 

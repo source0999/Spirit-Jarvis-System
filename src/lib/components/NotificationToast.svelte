@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { WEBUI_BASE_URL } from '$lib/constants';
+	import { BRANDING_LOGO_URL } from '$lib/constants';
 	import { settings, playingNotificationSound, isLastActiveTab } from '$lib/stores';
 	import DOMPurify from 'dompurify';
 	import { marked } from 'marked';
@@ -109,7 +109,7 @@
 	</button>
 
 	<div class="shrink-0 self-top -translate-y-0.5">
-		<img src="{WEBUI_BASE_URL}/static/favicon.png" alt="favicon" class="size-6 rounded-full" />
+		<img src={BRANDING_LOGO_URL} alt="" class="size-6 max-h-6 w-auto object-contain opacity-100" />
 	</div>
 
 	<div>

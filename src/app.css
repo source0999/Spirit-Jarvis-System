@@ -35,6 +35,129 @@
 	--app-text-scale: 1;
 }
 
+/* Pitch-black canvas (!important beats inline theme JS) */
+html.dark {
+	--gray-950: #000000 !important;
+	--gray-900: #000000 !important;
+	--bg-canvas: #000000 !important;
+	--color-gray-950: #000000 !important;
+	--color-gray-900: #000000 !important;
+	/* Slate #334155 @ 10% — global dark border tint */
+	--app-border-subtle: rgba(51, 65, 85, 0.1);
+}
+
+/* Force true #000 chat shell (body + main panes + scroll region) */
+html.dark body,
+html.dark #chat-container,
+html.dark #chat-container > .w-full,
+html.dark #chat-pane,
+html.dark #messages-container {
+	background: #000000 !important;
+	background-color: #000000 !important;
+}
+
+/* Kill semi-transparent black scrims over the chat (folder / wallpaper overlays) */
+html.dark #chat-container > div > div.absolute.top-0.left-0.w-full.h-full.z-0.bg-linear-to-t {
+	background: #000000 !important;
+	background-image: none !important;
+}
+
+/* Neutral slate borders in dark mode */
+html.dark * {
+	border-color: var(--app-border-subtle) !important;
+}
+
+/* Sidebar: neutral charcoal + muted slate divider */
+#sidebar {
+	background: #121212 !important;
+	border-image: none !important;
+	box-shadow: none !important;
+	border-top: none !important;
+	border-bottom: none !important;
+	border-left: none !important;
+	border-right: 1px solid #334155 !important;
+	position: relative;
+	z-index: 50;
+}
+
+/* Message stream: faint dividers between turns */
+html.dark ul[role='log'] > div[role='listitem']:not(:last-child) {
+	border-bottom-width: 1px !important;
+	border-bottom-style: solid !important;
+	border-bottom-color: var(--app-border-subtle) !important;
+}
+
+/* Assistant copy: high-contrast white–green stream */
+html.dark .chat-assistant .markdown-prose {
+	color: #c9ffd7 !important;
+}
+
+html.dark .chat-assistant .markdown-prose :where(h1, h2, h3, h4, h5, h6) {
+	color: #f0fff4 !important;
+}
+
+html.dark .chat-assistant .markdown-prose :where(p, li, td, th) {
+	color: #c9ffd7 !important;
+}
+
+html.dark .chat-assistant .markdown-prose :where(a),
+html.dark .chat-assistant.markdown-prose :where(a) {
+	color: #94a3b8 !important;
+}
+
+html.dark .chat-assistant .markdown-prose :where(a):hover,
+html.dark .chat-assistant.markdown-prose :where(a):hover {
+	color: #f8fafc !important;
+}
+
+html.dark .chat-assistant .markdown-prose :where(strong, b) {
+	color: #ffffff !important;
+}
+
+html.dark .chat-assistant .markdown-prose :where(blockquote) {
+	color: #b0ffc4 !important;
+}
+
+html.dark .chat-assistant .markdown-prose :where(hr) {
+	border-color: var(--app-border-subtle) !important;
+}
+
+html.dark #response-message-model-name {
+	color: #e2e8f0 !important;
+}
+
+.chat-assistant .markdown-prose :where(a),
+.chat-assistant.markdown-prose :where(a) {
+	color: #475569 !important;
+}
+
+.chat-assistant .markdown-prose :where(a):hover,
+.chat-assistant.markdown-prose :where(a):hover {
+	color: #171717 !important;
+}
+
+/* Composer: near-black fill + slate border; neutral hover/focus (no colored ring) */
+html.dark #message-input-container {
+	background-color: #050505 !important;
+	border: 1px solid #334155 !important;
+	box-shadow: none !important;
+	outline: none !important;
+}
+
+html.dark #message-input-container:hover,
+html.dark #message-input-container:focus-within {
+	box-shadow: inset 0 0 0 9999px rgba(255, 255, 255, 0.03) !important;
+}
+
+/* Phosphor grey placeholder (and any leading shell-style prompt in the same string) */
+#message-input-container .ProseMirror p.is-editor-empty:first-child::before {
+	color: #94a3b8 !important;
+}
+
+#message-input-container .ai-autocompletion::after {
+	color: #94a3b8 !important;
+}
+
 html {
 	word-break: break-word;
 	/* font-size scales the entire document via the same UI control */
@@ -119,7 +242,9 @@ textarea::placeholder {
 }
 
 .font-primary {
-	font-family: 'Archivo', 'Vazirmatn', sans-serif;
+	font-family:
+		'JetBrains Mono', 'Inter', 'Vazirmatn', ui-monospace, 'Cascadia Code', Menlo, Monaco, Consolas,
+		monospace, sans-serif;
 }
 
 .drag-region {
@@ -149,8 +274,8 @@ li p {
 
 /* Dark theme scrollbar styles */
 .dark ::-webkit-scrollbar-thumb {
-	background-color: rgba(67, 67, 67, 0.6); /* Darker color for dark theme */
-	border-color: rgba(0, 0, 0, var(--tw-border-opacity));
+	background-color: rgba(0, 255, 65, 0.22);
+	border-color: rgba(0, 255, 65, 0.35);
 }
 
 ::-webkit-scrollbar {
@@ -569,7 +694,7 @@ input[type='number'] {
 
 .tiptap pre {
 	border-radius: 0.5rem;
-	font-family: 'JetBrainsMono', monospace;
+	font-family: 'JetBrains Mono', ui-monospace, monospace;
 	margin: 1.5rem 0;
 	padding: 0.75rem 1rem;
 
@@ -699,8 +824,20 @@ body {
 }
 
 .dark body {
-	background: #171717;
-	color: #eee;
+	background: #000000 !important;
+	color: #e5e5e5;
+}
+
+/* Micro-interaction: neutral highlight (no matrix green) */
+.dark button:active:not(:disabled):not([aria-disabled='true']),
+.dark [role='button']:active:not([aria-disabled='true']) {
+	filter: none;
+	box-shadow: inset 0 0 0 9999px rgba(255, 255, 255, 0.05);
+}
+
+.light button:active:not(:disabled):not([aria-disabled='true']),
+.light [role='button']:active:not([aria-disabled='true']) {
+	filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.12));
 }
 
 /* Position the handle relative to each LI */

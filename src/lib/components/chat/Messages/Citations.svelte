@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { getContext } from 'svelte';
 	import { embed, showControls, showEmbeds } from '$lib/stores';
+	import { BRANDING_LOGO_URL } from '$lib/constants';
 
 	import CitationModal from './Citations/CitationModal.svelte';
 
@@ -179,7 +180,7 @@
 							alt="favicon"
 							class="size-4 rounded-full shrink-0 border border-white dark:border-gray-850 bg-white dark:bg-gray-900"
 							on:error={(e) => {
-								e.target.src = '/favicon.png';
+								e.target.src = BRANDING_LOGO_URL;
 							}}
 						/>
 					{/each}

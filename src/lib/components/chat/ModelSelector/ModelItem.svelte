@@ -5,7 +5,7 @@
 	import dayjs from '$lib/dayjs';
 
 	import { mobile, settings, user } from '$lib/stores';
-	import { WEBUI_API_BASE_URL, WEBUI_BASE_URL } from '$lib/constants';
+	import { WEBUI_API_BASE_URL, BRANDING_LOGO_URL } from '$lib/constants';
 
 	import Tooltip from '$lib/components/common/Tooltip.svelte';
 	import { copyToClipboard, sanitizeResponseContent } from '$lib/utils';
@@ -83,7 +83,7 @@
 						class="rounded-full size-5 flex items-center"
 						loading="lazy"
 						on:error={(e) => {
-							e.currentTarget.src = '/favicon.png';
+							e.currentTarget.src = BRANDING_LOGO_URL;
 						}}
 					/>
 				</Tooltip>
@@ -131,8 +131,8 @@
 									<span class="relative flex size-2">
 										<span
 											class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"
-										/>
-										<span class="relative inline-flex rounded-full size-2 bg-green-500" />
+										></span>
+										<span class="relative inline-flex rounded-full size-2 bg-green-500"></span>
 									</span>
 								</div>
 							</Tooltip>

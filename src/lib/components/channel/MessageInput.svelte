@@ -783,7 +783,7 @@
 					>
 						<div
 							id="message-input-container"
-							class="flex-1 flex flex-col relative w-full shadow-lg rounded-3xl border border-gray-50 dark:border-gray-850/30 hover:border-gray-100 focus-within:border-gray-100 hover:dark:border-gray-800 focus-within:dark:border-gray-800 transition px-1 bg-white/90 dark:bg-gray-400/5 dark:text-gray-100"
+							class="flex-1 flex flex-col relative w-full rounded-[2px] border border-solid border-gray-200/90 dark:border-[#334155] hover:border-gray-300 dark:hover:border-[#475569] focus-within:border-gray-400 focus-within:dark:border-[#475569] shadow-[0_6px_28px_rgba(0,0,0,0.12)] dark:shadow-none outline-hidden ring-0 focus-within:outline-hidden focus-within:ring-0 transition-[border-color] duration-200 ease-out px-1 bg-white/90 dark:bg-[#050505] dark:text-slate-200"
 							dir={$settings?.chatDirection ?? 'auto'}
 						>
 							{#if replyToMessage !== null}

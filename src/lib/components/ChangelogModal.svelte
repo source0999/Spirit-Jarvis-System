@@ -4,9 +4,9 @@
 	import { onMount, getContext } from 'svelte';
 	import { Confetti } from 'svelte-confetti';
 
-	import { WEBUI_NAME, config, settings } from '$lib/stores';
+	import { config, settings } from '$lib/stores';
 
-	import { WEBUI_VERSION } from '$lib/constants';
+	import { WEBUI_VERSION, BRANDING_LOGO_URL } from '$lib/constants';
 	import { getChangelog } from '$lib/apis';
 
 	import Modal from './common/Modal.svelte';
@@ -38,9 +38,13 @@
 <Modal bind:show size="xl">
 	<div class="px-6 pt-5 dark:text-white text-black">
 		<div class="flex justify-between items-start">
-			<h2 class="text-xl font-medium m-0">
+			<h2 class="text-xl font-medium m-0 flex flex-wrap items-center gap-2">
 				{$i18n.t("What's New in")}
-				{$WEBUI_NAME}
+				<img
+					src={BRANDING_LOGO_URL}
+					class="h-auto max-h-[32px] w-auto object-contain opacity-100"
+					alt=""
+				/>
 				<Confetti x={[-1, -0.25]} y={[0, 0.5]} />
 			</h2>
 			<button class="self-center" on:click={closeModal} aria-label={$i18n.t('Close')}>
@@ -49,7 +53,7 @@
 		</div>
 		<div class="flex items-center mt-1">
 			<div class="text-sm dark:text-gray-200">{$i18n.t('Release Notes')}</div>
-			<div class="flex self-center w-[1px] h-6 mx-2.5 bg-gray-50/50 dark:bg-gray-850/50" />
+			<div class="flex self-center w-[1px] h-6 mx-2.5 bg-gray-50/50 dark:bg-gray-850/50"></div>
 			<div class="text-sm dark:text-gray-200">
 				v{WEBUI_VERSION}
 			</div>

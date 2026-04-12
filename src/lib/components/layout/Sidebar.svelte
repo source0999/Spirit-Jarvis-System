@@ -25,8 +25,8 @@
 		isApp,
 		models,
 		selectedFolder,
-		WEBUI_NAME,
 		sidebarWidth,
+		WEBUI_NAME,
 		activeChatIds
 	} from '$lib/stores';
 	import { onMount, getContext, tick, onDestroy } from 'svelte';
@@ -44,7 +44,7 @@
 	} from '$lib/apis/chats';
 	import { createNewFolder, getFolders, updateFolderParentIdById } from '$lib/apis/folders';
 	import { checkActiveChats } from '$lib/apis/tasks';
-	import { WEBUI_API_BASE_URL, WEBUI_BASE_URL } from '$lib/constants';
+	import { WEBUI_API_BASE_URL, WEBUI_BASE_URL, BRANDING_LOGO_URL } from '$lib/constants';
 
 	import ArchivedChatsModal from './ArchivedChatsModal.svelte';
 	import UserMenu from './Sidebar/UserMenu.svelte';
@@ -65,6 +65,7 @@
 	import PinnedModelList from './Sidebar/PinnedModelList.svelte';
 	import Note from '../icons/Note.svelte';
 	import { slide } from 'svelte/transition';
+	import { cubicOut } from 'svelte/easing';
 	import HotkeyHint from '../common/HotkeyHint.svelte';
 
 	const BREAKPOINT = 768;
@@ -654,11 +655,12 @@
 	<div
 		class=" {$isApp
 			? ' ml-[4.5rem] md:ml-0'
-			: ''} fixed md:hidden z-40 top-0 right-0 left-0 bottom-0 bg-black/60 w-full min-h-screen h-screen flex justify-center overflow-hidden overscroll-contain"
+			: ''} fixed md:hidden z-40 top-0 right-0 left-0 bottom-0 bg-black/50 backdrop-blur-sm w-full min-h-screen h-screen flex justify-center overflow-hidden overscroll-contain transition-opacity duration-300 ease-out"
 		on:mousedown={() => {
 			showSidebar.set(!$showSidebar);
 		}}
-	/>
+		role="presentation"
+	></div>
 {/if}
 
 <SearchModal
@@ -672,12 +674,15 @@
 
 <button
 	id="sidebar-new-chat-button"
+	type="button"
 	class="hidden"
+	aria-label={$i18n.t('New Chat')}
+	tabindex="-1"
 	on:click={() => {
 		goto('/');
 		newChatHandler();
 	}}
-/>
+></button>
 
 <svelte:window
 	on:mousemove={(e) => {
@@ -691,7 +696,7 @@
 
 {#if !$mobile && !$showSidebar}
 	<div
-		class=" pt-[7px] pb-2 px-2 flex flex-col justify-between text-black dark:text-white hover:bg-gray-50/30 dark:hover:bg-gray-950/30 h-full z-10 transition-all border-e-[0.5px] border-gray-50 dark:border-gray-850/30"
+		class=" pt-[7px] pb-2 px-2 flex flex-col justify-between text-slate-200 h-full z-10 transition-all duration-300 ease-out border-e border-[#334155] bg-[#121212]"
 		id="sidebar"
 	>
 		<button
@@ -706,19 +711,17 @@
 					placement="right"
 				>
 					<button
-						class="flex rounded-xl hover:bg-gray-100 dark:hover:bg-gray-850 transition group {isWindows
+						class="flex rounded-xl hover:bg-white/10 transition group {isWindows
 							? 'cursor-pointer'
 							: 'cursor-[e-resize]'}"
 						aria-label={$showSidebar ? $i18n.t('Close Sidebar') : $i18n.t('Open Sidebar')}
 					>
 						<div class=" self-center flex items-center justify-center size-9">
 							<img
-								src="{WEBUI_BASE_URL}/static/favicon.png"
-								class="sidebar-new-chat-icon size-6 rounded-full group-hover:hidden"
-								alt=""
+								src={BRANDING_LOGO_URL}
+								class="max-h-[32px] h-auto w-auto max-w-full object-contain object-center opacity-100"
+								alt={$WEBUI_NAME}
 							/>
-
-							<Sidebar className="size-5 hidden group-hover:flex" />
 						</div>
 					</button>
 				</Tooltip>
@@ -728,7 +731,7 @@
 				<div class="">
 					<Tooltip content={$i18n.t('New Chat')} placement="right">
 						<a
-							class=" cursor-pointer flex rounded-xl hover:bg-gray-100 dark:hover:bg-gray-850 transition group"
+							class=" cursor-pointer flex rounded-xl hover:bg-white/10 transition group"
 							href="/"
 							draggable="false"
 							on:click={async (e) => {
@@ -750,7 +753,7 @@
 				<div>
 					<Tooltip content={$i18n.t('Search')} placement="right">
 						<button
-							class=" cursor-pointer flex rounded-xl hover:bg-gray-100 dark:hover:bg-gray-850 transition group"
+							class=" cursor-pointer flex rounded-xl hover:bg-white/10 transition group"
 							on:click={(e) => {
 								e.stopImmediatePropagation();
 								e.preventDefault();
@@ -771,7 +774,7 @@
 					<div class="">
 						<Tooltip content={$i18n.t('Notes')} placement="right">
 							<a
-								class=" cursor-pointer flex rounded-xl hover:bg-gray-100 dark:hover:bg-gray-850 transition group"
+								class=" cursor-pointer flex rounded-xl hover:bg-white/10 transition group"
 								href="/notes"
 								on:click={async (e) => {
 									e.stopImmediatePropagation();
@@ -795,7 +798,7 @@
 					<div class="">
 						<Tooltip content={$i18n.t('Workspace')} placement="right">
 							<a
-								class=" cursor-pointer flex rounded-xl hover:bg-gray-100 dark:hover:bg-gray-850 transition group"
+								class=" cursor-pointer flex rounded-xl hover:bg-white/10 transition group"
 								href="/workspace"
 								on:click={async (e) => {
 									e.stopImmediatePropagation();
@@ -845,7 +848,7 @@
 							}}
 						>
 							<div
-								class=" cursor-pointer flex rounded-xl hover:bg-gray-100 dark:hover:bg-gray-850 transition group"
+								class=" cursor-pointer flex rounded-xl hover:bg-white/10 transition group"
 							>
 								<div class="self-center relative">
 									<img
@@ -884,50 +887,40 @@
 		bind:this={navElement}
 		id="sidebar"
 		class="h-screen max-h-[100dvh] min-h-screen select-none {$showSidebar
-			? `${$mobile ? 'bg-gray-50 dark:bg-gray-950' : 'bg-gray-50/70 dark:bg-gray-950/70'} z-50`
-			: ' bg-transparent z-0 '} {$isApp
+			? `z-50 bg-[#121212] border-e border-[#334155]`
+			: ' bg-transparent z-0 border-e border-transparent'} {$isApp
 			? `ml-[4.5rem] md:ml-0 `
-			: ' transition-all duration-300 '} shrink-0 text-gray-900 dark:text-gray-200 text-sm fixed top-0 left-0 overflow-x-hidden
+			: ' transition-all duration-300 ease-out'} shrink-0 text-gray-900 dark:text-gray-200 text-sm fixed top-0 left-0 overflow-x-hidden max-w-[100vw] pt-[max(0px,env(safe-area-inset-top))]
         "
-		transition:slide={{ duration: 250, axis: 'x' }}
+		transition:slide={{ duration: 280, axis: 'x', easing: cubicOut }}
 		data-state={$showSidebar}
 	>
 		<div
-			class=" my-auto flex flex-col justify-between h-screen max-h-[100dvh] w-[var(--sidebar-width)] overflow-x-hidden scrollbar-hidden z-50 {$showSidebar
+			class=" my-auto flex flex-col justify-between h-screen max-h-[100dvh] w-[min(100vw,var(--sidebar-width))] min-w-0 overflow-x-hidden scrollbar-hidden z-50 {$showSidebar
 				? ''
 				: 'invisible'}"
 		>
 			<div
-				class="sidebar px-[0.5625rem] pt-2 pb-1.5 flex justify-between space-x-1 text-gray-600 dark:text-gray-400 sticky top-0 z-10 -mb-3"
+				class="sidebar px-2 pt-2 pb-1.5 flex items-center justify-between gap-2 text-slate-300 sticky top-0 z-10 -mb-3"
 			>
 				<a
-					class="flex items-center rounded-xl size-8.5 h-full justify-center hover:bg-gray-100/50 dark:hover:bg-gray-850/50 transition no-drag-region"
+					class="flex min-w-0 flex-1 items-center rounded-xl py-1 pl-1 pr-2 hover:bg-white/5 transition no-drag-region"
 					href="/"
 					draggable="false"
 					on:click={newChatHandler}
 				>
 					<img
-						crossorigin="anonymous"
-						src="{WEBUI_BASE_URL}/static/favicon.png"
-						class="sidebar-new-chat-icon size-6 rounded-full"
-						alt=""
+						src={BRANDING_LOGO_URL}
+						alt={$WEBUI_NAME}
+						class="max-h-[32px] h-auto w-auto object-contain object-left opacity-100"
 					/>
-				</a>
-
-				<a href="/" class="flex flex-1 px-1.5" on:click={newChatHandler}>
-					<div
-						id="sidebar-webui-name"
-						class=" self-center font-medium text-gray-850 dark:text-white font-primary"
-					>
-						{$WEBUI_NAME}
-					</div>
 				</a>
 				<Tooltip
 					content={$showSidebar ? $i18n.t('Close Sidebar') : $i18n.t('Open Sidebar')}
 					placement="bottom"
 				>
 					<button
-						class="flex rounded-xl size-8.5 justify-center items-center hover:bg-gray-100/50 dark:hover:bg-gray-850/50 transition {isWindows
+						class="flex shrink-0 rounded-xl size-8.5 justify-center items-center hover:bg-white/10 transition {isWindows
 							? 'cursor-pointer'
 							: 'cursor-[w-resize]'}"
 						on:click={() => {
@@ -944,7 +937,7 @@
 				<div
 					class="{scrollTop > 0
 						? 'visible'
-						: 'invisible'} sidebar-bg-gradient-to-b bg-linear-to-b from-gray-50 dark:from-gray-950 to-transparent from-50% pointer-events-none absolute inset-0 -z-10 -mb-6"
+						: 'invisible'} sidebar-bg-gradient-to-b bg-linear-to-b from-[#121212]/95 to-transparent from-50% pointer-events-none absolute inset-0 -z-10 -mb-6"
 				></div>
 			</div>
 
@@ -1398,7 +1391,7 @@
 
 			<div class="px-1.5 pt-1.5 pb-2 sticky bottom-0 z-10 -mt-3 sidebar">
 				<div
-					class=" sidebar-bg-gradient-to-t bg-linear-to-t from-gray-50 dark:from-gray-950 to-transparent from-50% pointer-events-none absolute inset-0 -z-10 -mt-6"
+					class=" sidebar-bg-gradient-to-t bg-linear-to-t from-[#121212]/95 to-transparent from-50% pointer-events-none absolute inset-0 -z-10 -mt-6"
 				></div>
 				<div class="flex flex-col font-primary">
 					{#if $user !== undefined && $user !== null}
@@ -1414,7 +1407,7 @@
 							}}
 						>
 							<div
-								class=" flex items-center rounded-2xl py-2 px-1.5 w-full hover:bg-gray-100/50 dark:hover:bg-gray-900/50 transition"
+								class=" flex items-center rounded-2xl py-2 px-1.5 w-full hover:bg-white/10 transition"
 							>
 								<div class=" self-center mr-3 relative">
 									<img
@@ -1446,15 +1439,18 @@
 	</div>
 
 	{#if !$mobile}
+		<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 		<div
-			class="relative flex items-center justify-center group border-l border-gray-50 dark:border-gray-850/30 hover:border-gray-200 dark:hover:border-gray-800 transition z-20"
+			class="relative flex items-center justify-center group border-l border-[#334155] hover:border-slate-500 transition-colors duration-300 z-20"
 			id="sidebar-resizer"
 			on:mousedown={resizeStartHandler}
 			role="separator"
+			aria-orientation="vertical"
+			aria-label={$i18n.t('Resize sidebar')}
 		>
 			<div
 				class=" absolute -left-1.5 -right-1.5 -top-0 -bottom-0 z-20 cursor-col-resize bg-transparent"
-			/>
+			></div>
 		</div>
 	{/if}
 {/if}

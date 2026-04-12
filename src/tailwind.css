@@ -3,6 +3,7 @@
 @config '../tailwind.config.js';
 
 @theme {
+	/* Pitch-black + near-black surfaces */
 	--color-gray-50: oklch(0.98 0 0);
 	--color-gray-100: oklch(0.94 0 0);
 	--color-gray-200: oklch(0.92 0 0);
@@ -10,11 +11,21 @@
 	--color-gray-400: oklch(0.77 0 0);
 	--color-gray-500: oklch(0.69 0 0);
 	--color-gray-600: oklch(0.51 0 0);
-	--color-gray-700: oklch(0.42 0 0);
-	--color-gray-800: oklch(0.32 0 0);
-	--color-gray-850: oklch(0.27 0 0);
-	--color-gray-900: oklch(0.2 0 0);
-	--color-gray-950: oklch(0.16 0 0);
+	--color-gray-700: oklch(0.35 0 0);
+	--color-gray-800: #141414;
+	--color-gray-850: #0a0a0a;
+	--color-gray-900: #000000;
+	--color-gray-950: #000000;
+
+	/* Industrial / chamfered: sharp corners by default (rounded-full unchanged) */
+	--radius-xs: 0.125rem;
+	--radius-sm: 0.125rem;
+	--radius-md: 0.125rem;
+	--radius-lg: 0.125rem;
+	--radius-xl: 0.125rem;
+	--radius-2xl: 0.125rem;
+	--radius-3xl: 0.125rem;
+	--radius-4xl: 0.125rem;
 }
 
 /*
@@ -37,11 +48,14 @@
 
 @layer base {
 	html,
+	body,
 	pre {
 		font-family:
-			-apple-system, BlinkMacSystemFont, 'Inter', 'Vazirmatn', ui-sans-serif, system-ui, 'Segoe UI',
-			Roboto, Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'Helvetica Neue', Arial,
-			'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+			'JetBrains Mono', 'Inter', 'Vazirmatn', ui-monospace, 'Cascadia Code', 'Segoe UI Mono',
+			'Roboto Mono', Menlo, Monaco, Consolas, monospace, -apple-system, BlinkMacSystemFont,
+			ui-sans-serif, system-ui, 'Segoe UI', Roboto, Ubuntu, Cantarell, 'Noto Sans', sans-serif,
+			'Helvetica Neue', Arial, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+			'Noto Color Emoji';
 	}
 
 	pre {
@@ -58,14 +72,14 @@
 	}
 
 	input[type='checkbox'] {
-		@apply appearance-none size-3.5 align-middle bg-white border border-gray-300 rounded transition cursor-pointer focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-gray-800 dark:border-gray-600 self-center;
+		@apply appearance-none size-3.5 align-middle bg-white border border-gray-300 rounded transition cursor-pointer focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-gray-800 dark:border-slate-500/70 dark:focus:ring-slate-500 self-center;
 		/* Center the custom mark */
 		display: inline-block;
 		position: relative;
 	}
 
 	input[type='checkbox']:checked {
-		@apply bg-blue-600 border-blue-600;
+		@apply bg-blue-600 border-blue-600 dark:bg-slate-500 dark:border-slate-500;
 	}
 
 	input[type='checkbox']:after {

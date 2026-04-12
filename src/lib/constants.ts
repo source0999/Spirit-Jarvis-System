@@ -1,7 +1,12 @@
 import { browser, dev } from '$app/environment';
+import brandingLogoUrl from '$lib/assets/logo.png';
+
 // import { version } from '../../package.json';
 
-export const APP_NAME = 'Open WebUI';
+export const APP_NAME = 'Irregular Cube';
+
+/** Bundled Irregular Cube mark — use for img src instead of /static/favicon.png */
+export const BRANDING_LOGO_URL: string = brandingLogoUrl;
 
 export const WEBUI_HOSTNAME = browser ? (dev ? `${location.hostname}:8080` : ``) : '';
 export const WEBUI_BASE_URL = browser ? (dev ? `http://${WEBUI_HOSTNAME}` : ``) : ``;

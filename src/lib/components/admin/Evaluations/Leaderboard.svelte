@@ -8,7 +8,7 @@
 	import Search from '$lib/components/icons/Search.svelte';
 	import ChevronUp from '$lib/components/icons/ChevronUp.svelte';
 	import ChevronDown from '$lib/components/icons/ChevronDown.svelte';
-	import { WEBUI_API_BASE_URL } from '$lib/constants';
+	import { WEBUI_API_BASE_URL, BRANDING_LOGO_URL } from '$lib/constants';
 
 	const i18n = getContext('i18n');
 
@@ -182,7 +182,7 @@
 									alt={model.name}
 									class="size-5 rounded-full object-cover shrink-0"
 									on:error={(e) => {
-										e.target.src = '/favicon.png';
+										e.target.src = BRANDING_LOGO_URL;
 									}}
 								/>
 								<Tooltip content={`${model.name} (${model.id})`} placement="top-start">

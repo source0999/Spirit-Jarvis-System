@@ -3,7 +3,6 @@
 	import { toast } from 'svelte-sonner';
 
 	import {
-		WEBUI_NAME,
 		banners,
 		chatId,
 		config,
@@ -70,7 +69,7 @@
 		initNewChat();
 	}}
 	aria-label="New Chat"
-/>
+></button>
 
 <nav
 	class="sticky top-0 z-30 w-full {chat?.id

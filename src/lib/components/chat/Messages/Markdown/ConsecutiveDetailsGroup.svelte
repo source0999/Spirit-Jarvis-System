@@ -123,7 +123,7 @@
 					<Spinner className="size-4" />
 				</div>
 			{:else if toolCallCount > 0}
-				<div class="text-emerald-500 dark:text-emerald-400">
+				<div class="text-slate-600 dark:text-slate-400">
 					<CheckCircle className="size-4" strokeWidth="2" />
 				</div>
 			{:else}

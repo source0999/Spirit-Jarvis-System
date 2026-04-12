@@ -6,7 +6,7 @@
 	import Tooltip from '$lib/components/common/Tooltip.svelte';
 	import Hashtag from '$lib/components/icons/Hashtag.svelte';
 	import Lock from '$lib/components/icons/Lock.svelte';
-	import { WEBUI_API_BASE_URL, WEBUI_BASE_URL } from '$lib/constants';
+	import { WEBUI_API_BASE_URL, WEBUI_BASE_URL, BRANDING_LOGO_URL } from '$lib/constants';
 	import { searchUsers } from '$lib/apis/users';
 
 	export let query = '';
@@ -201,7 +201,7 @@
 								alt={item?.data?.name ?? item.id}
 								class="rounded-full size-5 items-center mr-2"
 								on:error={(e) => {
-									e.currentTarget.src = '/favicon.png';
+									e.currentTarget.src = BRANDING_LOGO_URL;
 								}}
 							/>
 						{:else if item.type === 'user'}
@@ -210,7 +210,7 @@
 								alt={item?.label ?? item.id}
 								class="rounded-full size-5 items-center mr-2"
 								on:error={(e) => {
-									e.currentTarget.src = '/favicon.png';
+									e.currentTarget.src = BRANDING_LOGO_URL;
 								}}
 							/>
 						{/if}

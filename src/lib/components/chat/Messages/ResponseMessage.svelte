@@ -628,7 +628,7 @@
 		dir={$settings.chatDirection}
 		style="scroll-margin-top: 3rem;"
 	>
-		<div class={`shrink-0 ltr:mr-3 rtl:ml-3 hidden @lg:flex mt-1 `}>
+		<div class={`shrink-0 ltr:mr-3 rtl:ml-3 flex mt-1 `}>
 			<ProfileImage
 				src={`${WEBUI_API_BASE_URL}/models/model/profile/image?id=${model?.id}&lang=${$i18n.language}`}
 				className={'size-8 assistant-message-profile-image'}
@@ -662,7 +662,7 @@
 				{/if}
 			</Name>
 
-			<div>
+			<div class="mt-1 border-l border-solid border-[#334155] pl-3">
 				<div class="chat-{message.role} w-full min-w-full markdown-prose">
 					<div>
 						{#if model?.info?.meta?.capabilities?.status_updates ?? true}
@@ -713,7 +713,7 @@
 						{/if}
 
 						{#if edit === true}
-							<div class="w-full bg-gray-50 dark:bg-gray-800 rounded-3xl px-5 py-3 my-2">
+							<div class="my-2 w-full py-2">
 								<textarea
 									id="message-edit-{message.id}"
 									bind:this={editTextAreaElement}
@@ -740,7 +740,7 @@
 											document.getElementById('confirm-edit-message-button')?.click();
 										}
 									}}
-								/>
+								></textarea>
 
 								<div class=" mt-2 mb-1 flex justify-between text-sm font-medium">
 									<div>
@@ -782,7 +782,7 @@
 
 						<div
 							bind:this={contentContainerElement}
-							class="w-full flex flex-col relative {edit ? 'hidden' : ''}"
+							class="relative flex w-full flex-col {edit ? 'hidden' : ''}"
 							id="response-content-container"
 						>
 							{#if message.content === '' && !message.done && !message.error && !hasVisibleStatus}
@@ -1285,7 +1285,7 @@
 														});
 													});
 												}}
-											/>
+											></button>
 
 											<RegenerateMenu
 												onRegenerate={(prompt = null) => {

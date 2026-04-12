@@ -5,7 +5,7 @@
 	import { tick, getContext } from 'svelte';
 
 	import { models } from '$lib/stores';
-	import { WEBUI_API_BASE_URL, WEBUI_BASE_URL } from '$lib/constants';
+	import { WEBUI_API_BASE_URL, WEBUI_BASE_URL, BRANDING_LOGO_URL } from '$lib/constants';
 	import Tooltip from '$lib/components/common/Tooltip.svelte';
 
 	const i18n = getContext('i18n');
@@ -87,7 +87,7 @@
 						alt={model?.name ?? model.id}
 						class="rounded-full size-5 items-center mr-2"
 						on:error={(e) => {
-							e.currentTarget.src = '/favicon.png';
+							e.currentTarget.src = BRANDING_LOGO_URL;
 						}}
 					/>
 					<div class="truncate">

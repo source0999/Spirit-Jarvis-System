@@ -1,12 +1,15 @@
 <script lang="ts">
-	import { toast } from 'svelte-sonner';
+	import { fly } from 'svelte/transition';
+	import { cubicOut } from 'svelte/easing';
 
-	import { tick, getContext, onMount, createEventDispatcher } from 'svelte';
-	const dispatch = createEventDispatcher();
-	const i18n = getContext('i18n');
+	const messageSlideIn = () => {
+		if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+			return { y: 0, duration: 0, opacity: 1, easing: cubicOut };
+		}
+		return { y: 14, duration: 380, opacity: 0, easing: cubicOut };
+	};
 
 	import { settings } from '$lib/stores';
-	import { copyToClipboard } from '$lib/utils';
 
 	import MultiResponseMessages from './MultiResponseMessages.svelte';
 	import ResponseMessage from './ResponseMessage.svelte';
@@ -47,9 +50,10 @@
 
 <div
 	role="listitem"
-	class="flex flex-col justify-between px-5 mb-3 w-full {($settings?.widescreenMode ?? null)
+	in:fly={messageSlideIn()}
+	class="chat-message-log group flex w-full flex-col justify-between {($settings?.widescreenMode ?? null)
 		? 'max-w-full'
-		: 'max-w-5xl'} mx-auto rounded-lg group"
+		: 'max-w-5xl'} mx-auto mb-5 px-3 sm:px-4"
 >
 	{#if history.messages[messageId]}
 		{#if history.messages[messageId].role === 'user'}

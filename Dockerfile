@@ -27,8 +27,8 @@ ARG GID=0
 FROM --platform=$BUILDPLATFORM node:22-alpine3.20 AS build
 ARG BUILD_HASH
 
-# Set Node.js options (heap limit Allocation failed - JavaScript heap out of memory)
-# ENV NODE_OPTIONS="--max-old-space-size=4096"
+# Vite + Svelte + Pyodide can exceed Node's default ~2GB heap during `npm run build`
+ENV NODE_OPTIONS="--max-old-space-size=4096"
 
 WORKDIR /app
 
@@ -77,9 +77,11 @@ ENV OLLAMA_BASE_URL="/ollama" \
     OPENAI_API_BASE_URL=""
 
 ## API Key and Security Config ##
-ENV OPENAI_API_KEY="" \
-    WEBUI_SECRET_KEY="" \
-    SCARF_NO_ANALYTICS=true \
+# Do not declare OPENAI_API_KEY or WEBUI_SECRET_KEY here — that bakes names/values into the image and
+# triggers BuildKit “secrets in ENV” warnings. Pass them at runtime only, e.g.:
+#   docker run -e OPENAI_API_KEY=... -e WEBUI_SECRET_KEY=...
+# or compose `environment:` / Docker secrets. Never use ARG for real secrets (they can leak in layers).
+ENV SCARF_NO_ANALYTICS=true \
     DO_NOT_TRACK=true \
     ANONYMIZED_TELEMETRY=false
 

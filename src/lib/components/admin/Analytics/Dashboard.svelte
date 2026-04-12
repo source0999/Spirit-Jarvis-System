@@ -15,7 +15,7 @@
 	import ChartLine from './ChartLine.svelte';
 	import AnalyticsModelModal from './AnalyticsModelModal.svelte';
 	import Tooltip from '$lib/components/common/Tooltip.svelte';
-	import { WEBUI_API_BASE_URL } from '$lib/constants';
+	import { WEBUI_API_BASE_URL, BRANDING_LOGO_URL } from '$lib/constants';
 	import { formatNumber } from '$lib/utils';
 	import { goto } from '$app/navigation';
 
@@ -394,7 +394,7 @@
 											alt={model.name}
 											class="size-5 rounded-full object-cover shrink-0"
 											on:error={(e) => {
-												e.target.src = '/favicon.png';
+												e.target.src = BRANDING_LOGO_URL;
 											}}
 										/>
 										<span class="truncate max-w-[150px]">{model.name}</span>

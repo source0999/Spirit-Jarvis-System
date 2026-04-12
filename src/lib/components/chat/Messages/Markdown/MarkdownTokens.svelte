@@ -547,7 +547,7 @@
 			{onSourceClick}
 		/>
 	{:else if token.type === 'space'}
-		<div class="my-2" />
+		<div class="my-2"></div>
 	{:else}
 		{console.log('Unknown token', token)}
 	{/if}
