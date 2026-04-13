@@ -8,9 +8,14 @@ export const APP_NAME = 'Irregular Cube';
 /** Bundled Irregular Cube mark — use for img src instead of /static/favicon.png */
 export const BRANDING_LOGO_URL: string = brandingLogoUrl;
 
-export const WEBUI_HOSTNAME = browser ? (dev ? `${location.hostname}:8080` : ``) : '';
-export const WEBUI_BASE_URL = browser ? (dev ? `http://${WEBUI_HOSTNAME}` : ``) : ``;
-export const WEBUI_API_BASE_URL = `${WEBUI_BASE_URL}/api/v1`;
+/**
+ * Vite dev: use relative URLs so requests stay on :5173 and `vite.config.ts` `server.proxy`
+ * forwards `/api`, `/api/v1`, `/ws`, `/ollama`, `/openai`, `/oauth` to `http://localhost:8080`.
+ * Production: same-origin against the served app (empty base).
+ */
+export const WEBUI_HOSTNAME = browser ? (dev ? window.location.host : ``) : '';
+export const WEBUI_BASE_URL = '';
+export const WEBUI_API_BASE_URL = '/api/v1';
 
 export const OLLAMA_API_BASE_URL = `${WEBUI_BASE_URL}/ollama`;
 export const OPENAI_API_BASE_URL = `${WEBUI_BASE_URL}/openai`;

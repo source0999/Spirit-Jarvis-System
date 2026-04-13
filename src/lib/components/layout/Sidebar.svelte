@@ -3,6 +3,7 @@
 	import { v4 as uuidv4 } from 'uuid';
 
 	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
 	import {
 		user,
 		chats,
@@ -57,17 +58,16 @@
 	import { getChannels, createNewChannel } from '$lib/apis/channels';
 	import ChannelModal from './Sidebar/ChannelModal.svelte';
 	import ChannelItem from './Sidebar/ChannelItem.svelte';
-	import PencilSquare from '../icons/PencilSquare.svelte';
-	import Search from '../icons/Search.svelte';
+	import Home from '../icons/Home.svelte';
+	import Sparkles from '../icons/Sparkles.svelte';
+	import BookOpen from '../icons/BookOpen.svelte';
+	import ChartBar from '../icons/ChartBar.svelte';
 	import SearchModal from './SearchModal.svelte';
 	import FolderModal from './Sidebar/Folders/FolderModal.svelte';
 	import Sidebar from '../icons/Sidebar.svelte';
 	import PinnedModelList from './Sidebar/PinnedModelList.svelte';
-	import Note from '../icons/Note.svelte';
 	import { slide } from 'svelte/transition';
 	import { cubicOut } from 'svelte/easing';
-	import HotkeyHint from '../common/HotkeyHint.svelte';
-
 	const BREAKPOINT = 768;
 
 	let scrollTop = 0;
@@ -386,8 +386,8 @@
 		selectedChatId = null;
 	};
 
-	const MIN_WIDTH = 220;
-	const MAX_WIDTH = 480;
+	const MIN_WIDTH = 168;
+	const MAX_WIDTH = 420;
 
 	let isResizing = false;
 
@@ -585,6 +585,63 @@
 		await tick();
 	};
 
+	$: dataArchivesHref =
+		$user?.role === 'admin' || $user?.permissions?.workspace?.knowledge
+			? '/workspace/knowledge'
+			: ($config?.features?.enable_notes ?? false) &&
+				  ($user?.role === 'admin' || ($user?.permissions?.features?.notes ?? true))
+				? '/notes'
+				: '/workspace';
+
+	$: hardwareHref = $user?.role === 'admin' ? '/admin/analytics' : '/workspace/models';
+
+	$: railDashboardActive = $page.url.pathname === '/';
+	$: railNeuralActive =
+		$page.url.pathname.startsWith('/c/') || $page.url.pathname.startsWith('/playground');
+	$: railDataArchivesActive =
+		dataArchivesHref === '/workspace/knowledge'
+			? $page.url.pathname.startsWith('/workspace/knowledge')
+			: dataArchivesHref === '/notes'
+				? $page.url.pathname.startsWith('/notes')
+				: $page.url.pathname === '/workspace';
+	$: railHardwareActive =
+		$user?.role === 'admin'
+			? $page.url.pathname.startsWith('/admin/analytics')
+			: $page.url.pathname.startsWith('/workspace/models');
+
+	const railDashboard = async (e?: Event) => {
+		e?.preventDefault?.();
+		e?.stopPropagation?.();
+		await goto('/');
+		await newChatHandler();
+		await itemClickHandler();
+	};
+
+	const railNeuralChat = async (e?: Event) => {
+		e?.preventDefault?.();
+		e?.stopPropagation?.();
+		selectedChatId = null;
+		selectedFolder.set(null);
+		chatId.set('');
+		await goto('/playground');
+		if ($mobile) showSidebar.set(false);
+		await tick();
+	};
+
+	const railDataArchives = async (e?: Event) => {
+		e?.preventDefault?.();
+		e?.stopPropagation?.();
+		await goto(dataArchivesHref);
+		await itemClickHandler();
+	};
+
+	const railHardware = async (e?: Event) => {
+		e?.preventDefault?.();
+		e?.stopPropagation?.();
+		await goto(hardwareHref);
+		await itemClickHandler();
+	};
+
 	const isWindows = /Windows/i.test(navigator.userAgent);
 </script>
 
@@ -678,10 +735,7 @@
 	class="hidden"
 	aria-label={$i18n.t('New Chat')}
 	tabindex="-1"
-	on:click={() => {
-		goto('/');
-		newChatHandler();
-	}}
+	on:click={() => railDashboard()}
 ></button>
 
 <svelte:window
@@ -696,185 +750,139 @@
 
 {#if !$mobile && !$showSidebar}
 	<div
-		class=" pt-[7px] pb-2 px-2 flex flex-col justify-between text-slate-200 h-full z-10 transition-all duration-300 ease-out border-e border-[#334155] bg-[#121212]"
+		class="pt-0 pb-0.5 px-0 flex flex-col justify-between text-slate-200 h-full z-10 transition-all duration-300 ease-out border-e border-[#334155] bg-[#121212] control-rail-narrow"
 		id="sidebar"
 	>
-		<button
-			class="flex flex-col flex-1 {isWindows ? 'cursor-pointer' : 'cursor-[e-resize]'}"
-			on:click={async () => {
-				showSidebar.set(!$showSidebar);
-			}}
-		>
-			<div class="pb-1.5">
-				<Tooltip
-					content={$showSidebar ? $i18n.t('Close Sidebar') : $i18n.t('Open Sidebar')}
-					placement="right"
+		<div class="flex flex-col flex-1 min-h-0">
+			<Tooltip
+				content={$showSidebar ? $i18n.t('Close Sidebar') : $i18n.t('Open Sidebar')}
+				placement="right"
+			>
+				<button
+					type="button"
+					class="control-rail-item {isWindows ? 'cursor-pointer' : 'cursor-[e-resize]'}"
+					on:click={() => showSidebar.set(!$showSidebar)}
+					aria-label={$showSidebar ? $i18n.t('Close Sidebar') : $i18n.t('Open Sidebar')}
 				>
-					<button
-						class="flex rounded-xl hover:bg-white/10 transition group {isWindows
-							? 'cursor-pointer'
-							: 'cursor-[e-resize]'}"
-						aria-label={$showSidebar ? $i18n.t('Close Sidebar') : $i18n.t('Open Sidebar')}
+					<div class="flex items-center justify-center size-9">
+						<img
+							src={BRANDING_LOGO_URL}
+							class="spirit-brand-logo-glow max-h-[28px] h-auto w-auto max-w-full object-contain object-center opacity-100"
+							alt={$WEBUI_NAME}
+						/>
+					</div>
+				</button>
+			</Tooltip>
+
+			<div class="flex flex-col shrink-0">
+				<Tooltip content="Dashboard" placement="right">
+					<a
+						class="control-rail-item"
+						class:is-active={railDashboardActive}
+						href="/"
+						draggable="false"
+						aria-label="Dashboard"
+						on:click={(e) => railDashboard(e)}
 					>
-						<div class=" self-center flex items-center justify-center size-9">
-							<img
-								src={BRANDING_LOGO_URL}
-								class="max-h-[32px] h-auto w-auto max-w-full object-contain object-center opacity-100"
-								alt={$WEBUI_NAME}
-							/>
+						<div class="flex items-center justify-center size-9">
+							<Home className="size-5" strokeWidth="2.25" />
 						</div>
-					</button>
+					</a>
+				</Tooltip>
+
+				<Tooltip content="Neural Chat" placement="right">
+					<a
+						class="control-rail-item"
+						class:is-active={railNeuralActive}
+						href="/playground"
+						draggable="false"
+						aria-label="Neural Chat"
+						on:click={(e) => railNeuralChat(e)}
+					>
+						<div class="flex items-center justify-center size-9">
+							<Sparkles className="size-5" strokeWidth="2.25" />
+						</div>
+					</a>
+				</Tooltip>
+
+				<Tooltip content="Data Archives" placement="right">
+					<a
+						class="control-rail-item"
+						class:is-active={railDataArchivesActive}
+						href={dataArchivesHref}
+						draggable="false"
+						aria-label="Data Archives"
+						on:click={(e) => railDataArchives(e)}
+					>
+						<div class="flex items-center justify-center size-9">
+							<BookOpen className="size-5" strokeWidth="2.25" />
+						</div>
+					</a>
+				</Tooltip>
+
+				<Tooltip content="Hardware Monitor" placement="right">
+					<a
+						class="control-rail-item"
+						class:is-active={railHardwareActive}
+						href={hardwareHref}
+						draggable="false"
+						aria-label="Hardware Monitor"
+						on:click={(e) => railHardware(e)}
+					>
+						<div class="flex items-center justify-center size-9">
+							<ChartBar className="size-5" />
+						</div>
+					</a>
 				</Tooltip>
 			</div>
 
-			<div class="-mt-[0.5px]">
-				<div class="">
-					<Tooltip content={$i18n.t('New Chat')} placement="right">
-						<a
-							class=" cursor-pointer flex rounded-xl hover:bg-white/10 transition group"
-							href="/"
-							draggable="false"
-							on:click={async (e) => {
-								e.stopImmediatePropagation();
-								e.preventDefault();
+			<button
+				type="button"
+				class="flex-1 min-h-[1.25rem] w-full border-0 bg-transparent p-0 {isWindows
+					? 'cursor-pointer'
+					: 'cursor-[e-resize]'}"
+				aria-label={$i18n.t('Open Sidebar')}
+				on:click={() => showSidebar.set(true)}
+			></button>
+		</div>
 
-								goto('/');
-								newChatHandler();
-							}}
-							aria-label={$i18n.t('New Chat')}
-						>
-							<div class=" self-center flex items-center justify-center size-9">
-								<PencilSquare className="size-4.5" />
-							</div>
-						</a>
-					</Tooltip>
-				</div>
+		<div class="shrink-0 py-0.5 flex justify-center items-center">
+			{#if $user !== undefined && $user !== null}
+				<UserMenu
+					role={$user?.role}
+					profile={$config?.features?.enable_user_status ?? true}
+					showActiveUsers={false}
+					on:show={(e) => {
+						if (e.detail === 'archived-chat') {
+							showArchivedChats.set(true);
+						}
+					}}
+				>
+					<button
+						type="button"
+						class="control-rail-item"
+						aria-label={$i18n.t('Open User Profile Menu')}
+					>
+						<div class="relative flex items-center justify-center size-9">
+							<img
+								src={`${WEBUI_API_BASE_URL}/users/${$user?.id}/profile/image`}
+								class="size-7 object-cover rounded-full ring-1 ring-white/15"
+								alt=""
+							/>
 
-				<div>
-					<Tooltip content={$i18n.t('Search')} placement="right">
-						<button
-							class=" cursor-pointer flex rounded-xl hover:bg-white/10 transition group"
-							on:click={(e) => {
-								e.stopImmediatePropagation();
-								e.preventDefault();
-
-								showSearch.set(true);
-							}}
-							draggable="false"
-							aria-label={$i18n.t('Search')}
-						>
-							<div class=" self-center flex items-center justify-center size-9">
-								<Search className="size-4.5" />
-							</div>
-						</button>
-					</Tooltip>
-				</div>
-
-				{#if ($config?.features?.enable_notes ?? false) && ($user?.role === 'admin' || ($user?.permissions?.features?.notes ?? true))}
-					<div class="">
-						<Tooltip content={$i18n.t('Notes')} placement="right">
-							<a
-								class=" cursor-pointer flex rounded-xl hover:bg-white/10 transition group"
-								href="/notes"
-								on:click={async (e) => {
-									e.stopImmediatePropagation();
-									e.preventDefault();
-
-									goto('/notes');
-									itemClickHandler();
-								}}
-								draggable="false"
-								aria-label={$i18n.t('Notes')}
-							>
-								<div class=" self-center flex items-center justify-center size-9">
-									<Note className="size-4.5" />
+							{#if $config?.features?.enable_user_status}
+								<div class="absolute bottom-0 right-0">
+									<span class="relative flex size-2.5">
+										<span
+											class="relative inline-flex size-2.5 rounded-full bg-green-500 border-2 border-[#121212]"
+										></span>
+									</span>
 								</div>
-							</a>
-						</Tooltip>
-					</div>
-				{/if}
-
-				{#if $user?.role === 'admin' || $user?.permissions?.workspace?.models || $user?.permissions?.workspace?.knowledge || $user?.permissions?.workspace?.prompts || $user?.permissions?.workspace?.tools}
-					<div class="">
-						<Tooltip content={$i18n.t('Workspace')} placement="right">
-							<a
-								class=" cursor-pointer flex rounded-xl hover:bg-white/10 transition group"
-								href="/workspace"
-								on:click={async (e) => {
-									e.stopImmediatePropagation();
-									e.preventDefault();
-
-									goto('/workspace');
-									itemClickHandler();
-								}}
-								aria-label={$i18n.t('Workspace')}
-								draggable="false"
-							>
-								<div class=" self-center flex items-center justify-center size-9">
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										fill="none"
-										viewBox="0 0 24 24"
-										stroke-width="1.5"
-										stroke="currentColor"
-										class="size-4.5"
-									>
-										<path
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											d="M13.5 16.875h3.375m0 0h3.375m-3.375 0V13.5m0 3.375v3.375M6 10.5h2.25a2.25 2.25 0 0 0 2.25-2.25V6a2.25 2.25 0 0 0-2.25-2.25H6A2.25 2.25 0 0 0 3.75 6v2.25A2.25 2.25 0 0 0 6 10.5Zm0 9.75h2.25A2.25 2.25 0 0 0 10.5 18v-2.25a2.25 2.25 0 0 0-2.25-2.25H6a2.25 2.25 0 0 0-2.25 2.25V18A2.25 2.25 0 0 0 6 20.25Zm9.75-9.75H18a2.25 2.25 0 0 0 2.25-2.25V6A2.25 2.25 0 0 0 18 3.75h-2.25A2.25 2.25 0 0 0 13.5 6v2.25a2.25 2.25 0 0 0 2.25 2.25Z"
-										/>
-									</svg>
-								</div>
-							</a>
-						</Tooltip>
-					</div>
-				{/if}
-			</div>
-		</button>
-
-		<div>
-			<div>
-				<div class=" py-2 flex justify-center items-center">
-					{#if $user !== undefined && $user !== null}
-						<UserMenu
-							role={$user?.role}
-							profile={$config?.features?.enable_user_status ?? true}
-							showActiveUsers={false}
-							on:show={(e) => {
-								if (e.detail === 'archived-chat') {
-									showArchivedChats.set(true);
-								}
-							}}
-						>
-							<div
-								class=" cursor-pointer flex rounded-xl hover:bg-white/10 transition group"
-							>
-								<div class="self-center relative">
-									<img
-										src={`${WEBUI_API_BASE_URL}/users/${$user?.id}/profile/image`}
-										class=" size-7 object-cover rounded-full"
-										alt={$i18n.t('Open User Profile Menu')}
-										aria-label={$i18n.t('Open User Profile Menu')}
-									/>
-
-									{#if $config?.features?.enable_user_status}
-										<div class="absolute -bottom-0.5 -right-0.5">
-											<span class="relative flex size-2.5">
-												<span
-													class="relative inline-flex size-2.5 rounded-full {true
-														? 'bg-green-500'
-														: 'bg-gray-300 dark:bg-gray-700'} border-2 border-white dark:border-gray-900"
-												></span>
-											</span>
-										</div>
-									{/if}
-								</div>
-							</div>
-						</UserMenu>
-					{/if}
-				</div>
-			</div>
+							{/if}
+						</div>
+					</button>
+				</UserMenu>
+			{/if}
 		</div>
 	</div>
 {/if}
@@ -901,18 +909,18 @@
 				: 'invisible'}"
 		>
 			<div
-				class="sidebar px-2 pt-2 pb-1.5 flex items-center justify-between gap-2 text-slate-300 sticky top-0 z-10 -mb-3"
+				class="sidebar px-0 pt-1 pb-0 flex items-center justify-between gap-0 text-slate-300 sticky top-0 z-10 -mb-2"
 			>
 				<a
-					class="flex min-w-0 flex-1 items-center rounded-xl py-1 pl-1 pr-2 hover:bg-white/5 transition no-drag-region"
+					class="flex min-w-0 flex-1 items-center py-0 pl-0.5 pr-1 no-drag-region transition-opacity hover:opacity-90"
 					href="/"
 					draggable="false"
-					on:click={newChatHandler}
+					on:click={(e) => railDashboard(e)}
 				>
 					<img
 						src={BRANDING_LOGO_URL}
 						alt={$WEBUI_NAME}
-						class="max-h-[32px] h-auto w-auto object-contain object-left opacity-100"
+						class="spirit-brand-logo-glow max-h-[28px] h-auto w-auto object-contain object-left opacity-100"
 					/>
 				</a>
 				<Tooltip
@@ -920,15 +928,14 @@
 					placement="bottom"
 				>
 					<button
-						class="flex shrink-0 rounded-xl size-8.5 justify-center items-center hover:bg-white/10 transition {isWindows
-							? 'cursor-pointer'
-							: 'cursor-[w-resize]'}"
+						type="button"
+						class="control-rail-item shrink-0 size-9 {isWindows ? 'cursor-pointer' : 'cursor-[w-resize]'}"
 						on:click={() => {
 							showSidebar.set(!$showSidebar);
 						}}
 						aria-label={$showSidebar ? $i18n.t('Close Sidebar') : $i18n.t('Open Sidebar')}
 					>
-						<div class=" self-center p-1.5">
+						<div class="self-center p-1">
 							<Sidebar />
 						</div>
 					</button>
@@ -942,7 +949,7 @@
 			</div>
 
 			<div
-				class="relative flex flex-col flex-1 overflow-y-auto scrollbar-hidden pt-3 pb-3"
+				class="relative flex flex-col flex-1 overflow-y-auto scrollbar-hidden pt-1 pb-2"
 				on:scroll={(e) => {
 					if (e.target.scrollTop === 0) {
 						scrollTop = 0;
@@ -951,110 +958,78 @@
 					}
 				}}
 			>
-				<div class="pb-1.5">
-					<div class="px-[0.4375rem] flex justify-center text-gray-800 dark:text-gray-200">
-						<a
-							id="sidebar-new-chat-button"
-							class="group grow flex items-center space-x-3 rounded-2xl px-2.5 py-2 hover:bg-gray-100 dark:hover:bg-gray-900 transition outline-none"
-							href="/"
-							draggable="false"
-							on:click={newChatHandler}
-							aria-label={$i18n.t('New Chat')}
-						>
-							<div class="self-center">
-								<PencilSquare className=" size-4.5" strokeWidth="2" />
-							</div>
-
-							<div class="flex flex-1 self-center translate-y-[0.5px]">
-								<div class=" self-center text-sm font-primary">{$i18n.t('New Chat')}</div>
-							</div>
-
-							<HotkeyHint name="newChat" className=" group-hover:visible invisible" />
-						</a>
-					</div>
-
-					<div class="px-[0.4375rem] flex justify-center text-gray-800 dark:text-gray-200">
-						<button
-							id="sidebar-search-button"
-							class="group grow flex items-center space-x-3 rounded-2xl px-2.5 py-2 hover:bg-gray-100 dark:hover:bg-gray-900 transition outline-none"
-							on:click={() => {
-								showSearch.set(true);
-							}}
-							draggable="false"
-							aria-label={$i18n.t('Search')}
-						>
-							<div class="self-center">
-								<Search strokeWidth="2" className="size-4.5" />
-							</div>
-
-							<div class="flex flex-1 self-center translate-y-[0.5px]">
-								<div class=" self-center text-sm font-primary">{$i18n.t('Search')}</div>
-							</div>
-							<HotkeyHint name="search" className=" group-hover:visible invisible" />
-						</button>
-					</div>
-
-					{#if ($config?.features?.enable_notes ?? false) && ($user?.role === 'admin' || ($user?.permissions?.features?.notes ?? true))}
-						<div class="px-[0.4375rem] flex justify-center text-gray-800 dark:text-gray-200">
-							<a
-								id="sidebar-notes-button"
-								class="grow flex items-center space-x-3 rounded-2xl px-2.5 py-2 hover:bg-gray-100 dark:hover:bg-gray-900 transition"
-								href="/notes"
-								on:click={itemClickHandler}
-								draggable="false"
-								aria-label={$i18n.t('Notes')}
-							>
-								<div class="self-center">
-									<Note className="size-4.5" strokeWidth="2" />
-								</div>
-
-								<div class="flex self-center translate-y-[0.5px]">
-									<div class=" self-center text-sm font-primary">{$i18n.t('Notes')}</div>
-								</div>
-							</a>
+				<div class="pb-1 flex flex-col gap-0 text-gray-800 dark:text-gray-200">
+					<a
+						class="control-rail-item control-rail-item--wide w-full text-left"
+						class:is-active={railDashboardActive}
+						href="/"
+						draggable="false"
+						aria-label="Dashboard"
+						on:click={(e) => railDashboard(e)}
+					>
+						<div class="flex size-9 shrink-0 items-center justify-center">
+							<Home className="size-5" strokeWidth="2.25" />
 						</div>
-					{/if}
+						<span class="control-rail-item-label">Dashboard</span>
+					</a>
 
-					{#if $user?.role === 'admin' || $user?.permissions?.workspace?.models || $user?.permissions?.workspace?.knowledge || $user?.permissions?.workspace?.prompts || $user?.permissions?.workspace?.tools}
-						<div class="px-[0.4375rem] flex justify-center text-gray-800 dark:text-gray-200">
-							<a
-								id="sidebar-workspace-button"
-								class="grow flex items-center space-x-3 rounded-2xl px-2.5 py-2 hover:bg-gray-100 dark:hover:bg-gray-900 transition"
-								href="/workspace"
-								on:click={itemClickHandler}
-								draggable="false"
-								aria-label={$i18n.t('Workspace')}
-							>
-								<div class="self-center">
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										fill="none"
-										viewBox="0 0 24 24"
-										stroke-width="2"
-										stroke="currentColor"
-										class="size-4.5"
-									>
-										<path
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											d="M13.5 16.875h3.375m0 0h3.375m-3.375 0V13.5m0 3.375v3.375M6 10.5h2.25a2.25 2.25 0 0 0 2.25-2.25V6a2.25 2.25 0 0 0-2.25-2.25H6A2.25 2.25 0 0 0 3.75 6v2.25A2.25 2.25 0 0 0 6 10.5Zm0 9.75h2.25A2.25 2.25 0 0 0 10.5 18v-2.25a2.25 2.25 0 0 0-2.25-2.25H6a2.25 2.25 0 0 0-2.25 2.25V18A2.25 2.25 0 0 0 6 20.25Zm9.75-9.75H18a2.25 2.25 0 0 0 2.25-2.25V6A2.25 2.25 0 0 0 18 3.75h-2.25A2.25 2.25 0 0 0 13.5 6v2.25a2.25 2.25 0 0 0 2.25 2.25Z"
-										/>
-									</svg>
-								</div>
-
-								<div class="flex self-center translate-y-[0.5px]">
-									<div class=" self-center text-sm font-primary">{$i18n.t('Workspace')}</div>
-								</div>
-							</a>
+					<a
+						class="control-rail-item control-rail-item--wide w-full text-left"
+						class:is-active={railNeuralActive}
+						href="/playground"
+						draggable="false"
+						aria-label="Neural Chat"
+						on:click={(e) => railNeuralChat(e)}
+					>
+						<div class="flex size-9 shrink-0 items-center justify-center">
+							<Sparkles className="size-5" strokeWidth="2.25" />
 						</div>
-					{/if}
+						<span class="control-rail-item-label">Neural Chat</span>
+					</a>
+
+					<a
+						class="control-rail-item control-rail-item--wide w-full text-left"
+						class:is-active={railDataArchivesActive}
+						href={dataArchivesHref}
+						draggable="false"
+						aria-label="Data Archives"
+						on:click={(e) => railDataArchives(e)}
+					>
+						<div class="flex size-9 shrink-0 items-center justify-center">
+							<BookOpen className="size-5" strokeWidth="2.25" />
+						</div>
+						<span class="control-rail-item-label">Data Archives</span>
+					</a>
+
+					<a
+						class="control-rail-item control-rail-item--wide w-full text-left"
+						class:is-active={railHardwareActive}
+						href={hardwareHref}
+						draggable="false"
+						aria-label="Hardware Monitor"
+						on:click={(e) => railHardware(e)}
+					>
+						<div class="flex size-9 shrink-0 items-center justify-center">
+							<ChartBar className="size-5" />
+						</div>
+						<span class="control-rail-item-label">Hardware Monitor</span>
+					</a>
+
+					<button
+						id="sidebar-search-button"
+						type="button"
+						class="hidden"
+						aria-label={$i18n.t('Search')}
+						tabindex="-1"
+						on:click={() => showSearch.set(true)}
+					></button>
 				</div>
 
 				{#if ($models ?? []).length > 0 && (($settings?.pinnedModels ?? []).length > 0 || $config?.default_pinned_models)}
 					<Folder
 						id="sidebar-models"
 						bind:open={showPinnedModels}
-						className="px-2 mt-0.5"
+						className="px-1 mt-0.5"
 						name={$i18n.t('Models')}
 						chevron={false}
 						dragAndDrop={false}
@@ -1067,7 +1042,7 @@
 					<Folder
 						id="sidebar-channels"
 						bind:open={showChannels}
-						className="px-2 mt-0.5"
+						className="px-1 mt-0.5"
 						name={$i18n.t('Channels')}
 						chevron={false}
 						dragAndDrop={false}
@@ -1102,7 +1077,7 @@
 					<Folder
 						id="sidebar-folders"
 						bind:open={showFolders}
-						className="px-2 mt-0.5"
+						className="px-1 mt-0.5"
 						name={$i18n.t('Folders')}
 						chevron={false}
 						onAdd={() => {
@@ -1154,7 +1129,7 @@
 
 				<Folder
 					id="sidebar-chats"
-					className="px-2 mt-0.5"
+					className="px-1 mt-0.5"
 					name={$i18n.t('Chats')}
 					chevron={false}
 					on:change={async (e) => {

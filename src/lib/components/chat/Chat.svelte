@@ -2936,7 +2936,7 @@
 								</div>
 							</div>
 						{:else}
-							<div class="flex items-center h-full">
+							<div class="flex items-stretch h-full min-h-0 overflow-y-auto scrollbar-hidden">
 								<Placeholder
 									{history}
 									{selectedModels}

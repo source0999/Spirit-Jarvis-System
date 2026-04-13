@@ -44,6 +44,157 @@ html.dark {
 	--color-gray-900: #000000 !important;
 	/* Slate #334155 @ 10% — global dark border tint */
 	--app-border-subtle: rgba(51, 65, 85, 0.1);
+
+	/* High-tech dashboard: dual-tone neon + glass surfaces */
+	--dash-accent-cyan: #22d3ee;
+	--dash-accent-violet: #8b5cf6;
+	--dash-card-bg: rgba(15, 23, 42, 0.6);
+	--dash-card-border: rgba(255, 255, 255, 0.1);
+	--dash-card-glow: 0 0 15px rgba(34, 211, 238, 0.2);
+}
+
+/* -------------------------------------------------------------------------- */
+/* High-tech dashboard: glass cards, glows, branding (dark) */
+/* -------------------------------------------------------------------------- */
+
+html.dark .spirit-dashboard-surface {
+	background: var(--dash-card-bg) !important;
+	backdrop-filter: blur(12px);
+	-webkit-backdrop-filter: blur(12px);
+	border: 1px solid var(--dash-card-border) !important;
+	box-shadow: none;
+	transition:
+		box-shadow 0.25s ease,
+		border-color 0.25s ease;
+}
+
+html.dark .spirit-dashboard-surface--header {
+	box-shadow: var(--dash-card-glow);
+}
+
+html.dark .spirit-dashboard-surface--interactive:hover,
+html.dark .spirit-dashboard-surface--interactive:focus-within {
+	box-shadow: var(--dash-card-glow);
+	border-color: rgba(34, 211, 238, 0.22) !important;
+}
+
+html.dark .spirit-dashboard-surface--nested {
+	background: rgba(15, 23, 42, 0.45) !important;
+	backdrop-filter: blur(10px);
+	-webkit-backdrop-filter: blur(10px);
+	border: 1px solid var(--dash-card-border) !important;
+}
+
+html.dark .spirit-brand-logo-glow {
+	border-radius: 4px;
+	box-shadow: var(--dash-card-glow);
+}
+
+/* Dashboard typography: mono / Inter, wide tracking */
+html.dark .spirit-system-dashboard :is(h1, h2, h3) {
+	font-family:
+		'JetBrains Mono', 'Inter', ui-monospace, 'Cascadia Code', system-ui, sans-serif;
+	letter-spacing: 0.14em;
+}
+
+html.dark .spirit-dash-accent-text {
+	background: linear-gradient(105deg, var(--dash-accent-cyan) 0%, var(--dash-accent-violet) 100%);
+	-webkit-background-clip: text;
+	background-clip: text;
+	color: transparent;
+}
+
+html.dark .spirit-traffic-graph {
+	color: var(--dash-accent-cyan);
+}
+
+html.dark .spirit-storage-bar-fill {
+	background: linear-gradient(90deg, var(--dash-accent-cyan), var(--dash-accent-violet)) !important;
+	box-shadow: 0 0 10px rgba(34, 211, 238, 0.25);
+}
+
+/* Global headings (dark): high-tech tracking; exclude rich markdown bodies */
+html.dark :where(h1, h2, h3, h4, h5, h6) {
+	font-family:
+		'JetBrains Mono', 'Inter', ui-monospace, 'Cascadia Code', system-ui, sans-serif;
+	letter-spacing: 0.12em;
+}
+
+html.dark
+	:where(.markdown-prose, .markdown-prose-sm, .markdown-prose-xs, .prose, .tiptap, .input-prose)
+	:where(h1, h2, h3, h4, h5, h6) {
+	font-family: inherit;
+	letter-spacing: normal;
+}
+
+/* Light theme: same glass recipe, lighter tint */
+html.light .spirit-dashboard-surface,
+html.her .spirit-dashboard-surface {
+	background: rgba(255, 255, 255, 0.72) !important;
+	backdrop-filter: blur(12px);
+	-webkit-backdrop-filter: blur(12px);
+	border: 1px solid rgba(15, 23, 42, 0.12) !important;
+	box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+}
+
+html.light .spirit-dashboard-surface--header,
+html.her .spirit-dashboard-surface--header {
+	box-shadow: 0 0 15px rgba(34, 211, 238, 0.18);
+}
+
+html.light .spirit-dashboard-surface--interactive:hover,
+html.light .spirit-dashboard-surface--interactive:focus-within,
+html.her .spirit-dashboard-surface--interactive:hover,
+html.her .spirit-dashboard-surface--interactive:focus-within {
+	box-shadow: 0 0 15px rgba(34, 211, 238, 0.18);
+	border-color: rgba(34, 211, 238, 0.35) !important;
+}
+
+html.light .spirit-brand-logo-glow,
+html.her .spirit-brand-logo-glow {
+	box-shadow: 0 0 15px rgba(34, 211, 238, 0.2);
+}
+
+html.light .spirit-dash-accent-text,
+html.her .spirit-dash-accent-text {
+	background: linear-gradient(105deg, #06b6d4 0%, #7c3aed 100%);
+	-webkit-background-clip: text;
+	background-clip: text;
+	color: transparent;
+}
+
+html.light .spirit-traffic-graph,
+html.her .spirit-traffic-graph {
+	color: #0891b2;
+}
+
+html.light .spirit-dashboard-surface--nested,
+html.her .spirit-dashboard-surface--nested {
+	background: rgba(248, 250, 252, 0.85) !important;
+	border: 1px solid rgba(15, 23, 42, 0.1) !important;
+}
+
+html.light .spirit-storage-bar-fill,
+html.her .spirit-storage-bar-fill {
+	background: linear-gradient(90deg, #06b6d4, #7c3aed) !important;
+	box-shadow: 0 0 10px rgba(34, 211, 238, 0.2);
+}
+
+html.light :where(h1, h2, h3, h4, h5, h6),
+html.her :where(h1, h2, h3, h4, h5, h6) {
+	font-family:
+		'JetBrains Mono', 'Inter', ui-monospace, 'Cascadia Code', system-ui, sans-serif;
+	letter-spacing: 0.12em;
+}
+
+html.light
+	:where(.markdown-prose, .markdown-prose-sm, .markdown-prose-xs, .prose, .tiptap, .input-prose)
+	:where(h1, h2, h3, h4, h5, h6),
+html.her
+	:where(.markdown-prose, .markdown-prose-sm, .markdown-prose-xs, .prose, .tiptap, .input-prose)
+	:where(h1, h2, h3, h4, h5, h6) {
+	font-family: inherit;
+	letter-spacing: normal;
 }
 
 /* Force true #000 chat shell (body + main panes + scroll region) */
@@ -78,6 +229,99 @@ html.dark * {
 	border-right: 1px solid #334155 !important;
 	position: relative;
 	z-index: 50;
+}
+
+/* Control Rail (narrow strip): fixed width, zero horizontal padding */
+#sidebar.control-rail-narrow {
+	width: 3.25rem !important;
+	min-width: 3.25rem !important;
+	max-width: 3.25rem !important;
+	padding-left: 0 !important;
+	padding-right: 0 !important;
+	border-right-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Rail item: no “web card” hover — neon vertical line on the left */
+.control-rail-item {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	min-height: 2.75rem;
+	padding: 0;
+	margin: 0;
+	border: none !important;
+	border-radius: 0;
+	background: transparent !important;
+	color: #f1f5f9;
+	transition: color 0.15s ease;
+}
+
+.control-rail-item:hover,
+.control-rail-item:focus-visible {
+	background: transparent !important;
+	color: #ffffff;
+	outline: none;
+}
+
+.control-rail-item::before {
+	content: '';
+	position: absolute;
+	left: 0;
+	top: 0.35rem;
+	bottom: 0.35rem;
+	width: 3px;
+	border-radius: 0 2px 2px 0;
+	background: linear-gradient(
+		180deg,
+		var(--dash-accent-cyan, #22d3ee),
+		var(--dash-accent-violet, #8b5cf6)
+	);
+	box-shadow: 0 0 12px rgba(34, 211, 238, 0.45);
+	opacity: 0;
+	transition: opacity 0.15s ease;
+}
+
+.control-rail-item:hover::before,
+.control-rail-item:focus-visible::before,
+.control-rail-item.is-active::before {
+	opacity: 1;
+}
+
+.control-rail-item svg {
+	filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.9));
+}
+
+.control-rail-item--wide {
+	justify-content: flex-start;
+	gap: 0.5rem;
+	padding-left: 0.5rem;
+	padding-right: 0.25rem;
+	min-height: 2.5rem;
+}
+
+.control-rail-item-label {
+	font-family: 'JetBrains Mono', 'Inter', ui-monospace, monospace;
+	font-size: 0.5625rem;
+	font-weight: 600;
+	line-height: 1.2;
+	letter-spacing: 0.18em;
+	text-transform: uppercase;
+	color: inherit;
+}
+
+html.light .control-rail-item {
+	color: #0f172a;
+}
+
+html.light .control-rail-item:hover,
+html.light .control-rail-item:focus-visible {
+	color: #020617;
+}
+
+html.light .control-rail-item::before {
+	box-shadow: 0 0 10px rgba(8, 145, 178, 0.35);
 }
 
 /* Message stream: faint dividers between turns */
