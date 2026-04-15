@@ -1,65 +1,64 @@
-import Image from "next/image";
+import VitalSigns from "@/components/VitalSigns";
+import ProjectPortalWidget from "@/components/ProjectPortalWidget";
+import StorageSentinel from "@/components/StorageSentinel";
+import DashboardChatLauncher from "@/components/DashboardChatLauncher";
+import SonicStatsWidget from "@/components/SonicStatsWidget";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <main className="min-h-screen bg-[#02040a] p-4 sm:p-6 md:p-6 font-mono text-slate-300">
+      {/* Dynamic Header */}
+      <div className="max-w-[1600px] mx-auto mb-6 md:mb-8 flex justify-between items-center border-b border-cyan-950/40 pb-4 md:pb-6">
+        <div className="min-w-0">
+          <h1 className="text-2xl sm:text-3xl font-black tracking-tighter text-cyan-400 italic">
+            SPIRIT_OS{" "}
+            <span className="text-[10px] sm:text-xs font-light not-italic text-cyan-800 ml-1 sm:ml-2 block sm:inline mt-1 sm:mt-0">
+              NODE_SEED_01
+            </span>
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+          <div className="flex flex-col sm:flex-row sm:flex-wrap gap-2 sm:gap-4 mt-2">
+            <span className="text-[10px] text-emerald-500 flex items-center gap-1">
+              <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse shrink-0" /> SYSTEM_NOMINAL
+            </span>
+            <span className="text-[10px] text-cyan-700 uppercase tracking-widest">Location: Georgia_Lab</span>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </div>
+
+      {/* md+: fixed 2×2 grid (280px rail + stable row heights) to avoid layout jump on refresh */}
+      <div
+        className={[
+          "max-w-[1600px] mx-auto flex flex-col gap-6",
+          "md:grid md:grid-cols-[minmax(0,1fr)_280px] md:grid-rows-[repeat(2,minmax(350px,auto))] md:gap-8 md:items-stretch",
+        ].join(" ")}
+      >
+        <div className="min-h-[350px] min-w-0 flex flex-col md:min-h-0">
+          <div className="h-full min-h-[350px] bg-gradient-to-br from-cyan-950/10 to-transparent border border-cyan-900/20 rounded-2xl p-4 sm:p-6 backdrop-blur-xl flex flex-col">
+            <VitalSigns />
+          </div>
         </div>
-      </main>
-    </div>
+
+        <div className="min-h-[350px] min-w-0 flex flex-col md:min-h-0">
+          <div className="h-full min-h-[350px] flex flex-col">
+            <ProjectPortalWidget />
+          </div>
+        </div>
+
+        <div className="min-h-[350px] min-w-0 flex flex-col gap-6 md:min-h-0">
+          <div className="min-h-0 flex-1 flex flex-col min-h-[200px]">
+            <DashboardChatLauncher />
+          </div>
+          <div className="min-h-0 flex-1 flex flex-col min-h-[200px]">
+            <SonicStatsWidget />
+          </div>
+        </div>
+
+        <div className="min-h-[350px] min-w-0 flex flex-col md:min-h-0">
+          <div className="h-full min-h-[350px] flex flex-col">
+            <StorageSentinel />
+          </div>
+        </div>
+      </div>
+    </main>
   );
 }
